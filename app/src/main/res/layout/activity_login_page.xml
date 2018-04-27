@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginPage">
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="257dp"
+        android:layout_height="74dp"
+        android:layout_marginBottom="67dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginLeft="67dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginStart="67dp"
+        android:text="LOGIN"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="57dp"
+        android:layout_marginEnd="211dp"
+        android:layout_marginLeft="67dp"
+        android:layout_marginRight="211dp"
+        android:layout_marginStart="67dp"
+        android:layout_marginTop="265dp"
+        android:text="Add "
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
