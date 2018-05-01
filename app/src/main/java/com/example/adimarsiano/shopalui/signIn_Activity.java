@@ -44,8 +44,7 @@ public class signIn_Activity extends AppCompatActivity implements
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
+
 
         // [START configure_signin]
         // Configure sign-in to request the user's ID, email address, and basic
@@ -54,6 +53,7 @@ public class signIn_Activity extends AppCompatActivity implements
                 .requestEmail()
                 .build();
         // [END configure_signin]
+
 
         // [START build_client]
         // Build a GoogleSignInClient with the options specified by gso.
@@ -76,6 +76,8 @@ public class signIn_Activity extends AppCompatActivity implements
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+
+
         updateUI(account);
         // [END on_start_sign_in]
     }
@@ -83,6 +85,9 @@ public class signIn_Activity extends AppCompatActivity implements
     // [START onActivityResult]
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //move to next page
+        Intent k = new Intent(getApplicationContext(),home_Activity.class);
+        startActivity(k);
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -102,6 +107,7 @@ public class signIn_Activity extends AppCompatActivity implements
 
             // Signed in successfully, show authenticated UI.
             updateUI(account);
+
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -118,20 +124,6 @@ public class signIn_Activity extends AppCompatActivity implements
     }
     // [END signIn]
 
-    // [START signOut]
-    private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // [START_EXCLUDE]
-                        updateUI(null);
-                        // [END_EXCLUDE]
-                    }
-                });
-    }
-    // [END signOut]
-
     // [START revokeAccess]
     private void revokeAccess() {
         mGoogleSignInClient.revokeAccess()
@@ -139,7 +131,10 @@ public class signIn_Activity extends AppCompatActivity implements
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         // [START_EXCLUDE]
+
                         updateUI(null);
+                       // Intent j = new Intent(getApplicationContext(),home_Activity.class);
+                       // startActivity(j);
                         // [END_EXCLUDE]
                     }
                 });
@@ -148,15 +143,21 @@ public class signIn_Activity extends AppCompatActivity implements
 
     private void updateUI(@Nullable GoogleSignInAccount account) {
         if (account != null) {
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, account.getDisplayName()));
 
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+           /* mStatusTextView.setText(getString(R.string.signed_in_fmt, account.getDisplayName()));
+
+            findViewById(R.id.sign_in_button).setVisibility(View.GONE);*/
+            Intent k = new Intent(getApplicationContext(),home_Activity.class);
+            startActivity(k);
+            //findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+
         } else {
-            mStatusTextView.setText(R.string.signed_out);
+
+            //mStatusTextView.setText(R.string.signed_out);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+            //findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+
         }
     }
 
@@ -165,12 +166,6 @@ public class signIn_Activity extends AppCompatActivity implements
         switch (v.getId()) {
             case R.id.sign_in_button:
                 signIn();
-                break;
-            case R.id.sign_out_button:
-                signOut();
-                break;
-            case R.id.disconnect_button:
-                revokeAccess();
                 break;
         }
     }
