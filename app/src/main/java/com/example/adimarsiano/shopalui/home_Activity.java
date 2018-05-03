@@ -91,6 +91,11 @@ public class home_Activity extends Activity implements View.OnClickListener {
 
     }
 
+    public void barcodeScanner(View view){
+        Intent startBarcodeScannerActivity = new Intent(this, BarcodeScannerActivity.class);
+        startActivity(startBarcodeScannerActivity);
+    }
+
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 

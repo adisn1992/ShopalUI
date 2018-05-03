@@ -41,7 +41,8 @@
                 android:id="@+id/button4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Scan New Product" />
+                android:text="@string/Scan_New_Product"
+                android:onClick="barcodeScanner"/>
 
             <Button
                 android:id="@+id/button5"

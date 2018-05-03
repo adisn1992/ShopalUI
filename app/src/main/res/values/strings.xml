@@ -44,6 +44,8 @@
 
     <string name="desc_rest_activity">Demonstrate using Google Sign In with a Google REST API</string>
     <string name="name_rest_activity">RestApiActivity</string>
+    <string name="Scan_New_Product">Scan</string>
+    <string name="scan">Scan</string>
 
     <!-- Messages for the Rest API activity -->
     <string name="connections_fmt">Connections: %1$s</string>
