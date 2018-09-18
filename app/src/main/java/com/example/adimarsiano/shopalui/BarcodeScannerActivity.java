@@ -17,10 +17,7 @@ import android.widget.Toast;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class BarcodeScannerActivity extends AppCompatActivity implements OnClickListener{
 
@@ -48,65 +45,77 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
         }
     }
 
+    private class GetProductTask extends AsyncTask<String, String, String>  {
+        private  StringBuilder builder = new StringBuilder();
+        private TextView  contentTxt;
+        @Override
+        protected String doInBackground(String[] parameters) {
+            try {
+                System.out.println("running in new thread");
+                URL shopalUrl = new URL("http://192.168.1.13:8080/rest/shopal/product/" + parameters[0].toString());
+
+                System.out.println("url: " + shopalUrl);
+                // Create connection
+                HttpURLConnection myConnection = (HttpURLConnection) shopalUrl.openConnection();
+
+                System.out.println("response input stream");
+                InputStream responseInputStream = myConnection.getInputStream();
+                System.out.println("response body reader");
+                InputStreamReader responseBodyReader =
+                        new InputStreamReader(responseInputStream, "UTF-8");
+
+                System.out.println("json reader");
+                JsonReader jsonReader = new JsonReader(responseBodyReader);
+
+                System.out.println("begin object");
+                jsonReader.beginArray(); // Start processing the JSON object
+                jsonReader.beginObject();
+                //StringBuilder builder = new StringBuilder();
+                while (jsonReader.hasNext()) { // Loop through all keys
+                    String key = jsonReader.nextName(); // Fetch the next key
+                    // Fetch the value as a String
+                    String value = jsonReader.nextString();
+
+                    builder.append(key);
+                    builder.append(" : ");
+                    builder.append(value);
+                    builder.append('\n');
+
+                }
+                System.out.println(builder.toString());
+//            contentTxt = (TextView) objects[1];
+//            contentTxt.setText("Product Details: " + builder.toString());
+            } catch (Exception e)
+            {
+                System.out.println(e);
+            }
+
+
+            return builder.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            contentTxt = (TextView)findViewById(R.id.scan_content);
+            contentTxt.setText(builder.toString());
+        }
+    }
+
+
     //retrieve scan result
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         //we have a result
-        if(scanningResult != null){
+        if(scanningResult != null) {
             final String scanContent = scanningResult.getContents();
-            String scanFormat = scanningResult.getFormatName();
-            formatTxt.setText("FORMAT: "+ scanFormat);
-            contentTxt.setText("CONTENT: "+ scanContent);
-
-
-            System.out.println("going to send rest");
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    // Send barcode to server in order to get product
-                    // Create URL
-                    try {
-                        System.out.println("running in new thread");
-                        URL shopalUrl = new URL("http://192.168.1.13:8080/rest/shopal/product/" + scanContent);
-
-                        System.out.println("url: " + shopalUrl);
-                        // Create connection
-                        HttpURLConnection myConnection = (HttpURLConnection) shopalUrl.openConnection();
-
-//                        System.out.println("response input stream");
-//                        InputStream responseInputStream = myConnection.getInputStream();
-//                        System.out.println("response body reader");
-//                        InputStreamReader responseBodyReader =
-//                                new InputStreamReader(responseInputStream, "UTF-8");
-//
-//                        System.out.println("json reader");
-//                        JsonReader jsonReader = new JsonReader(responseBodyReader);
-//
-//                        System.out.println("begin object");
-//                        jsonReader.beginObject(); // Start processing the JSON object
-//                        while (jsonReader.hasNext()) { // Loop through all keys
-//                            System.out.println("next");
-//                            String key = jsonReader.nextName(); // Fetch the next key
-//                            // Fetch the value as a String
-//                            String value = jsonReader.nextString();
-//
-//                            System.out.println(key + ":" + value);
-//
-//                            // Do something with the value
-//                            // ...
-//                        }
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-                }
-            });
-
-
+            GetProductTask getProductTask = new GetProductTask();
+            getProductTask.execute(scanContent);
 
         }
         else{
             Toast toast = Toast.makeText(getApplicationContext(),"No scan received!",Toast.LENGTH_SHORT);
             toast.show();
         }
+
     }
 }
