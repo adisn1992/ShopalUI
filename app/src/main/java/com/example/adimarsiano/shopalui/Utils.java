@@ -1,6 +1,7 @@
 package com.example.adimarsiano.shopalui;
 
 import android.support.v7.app.AppCompatActivity;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import org.json.simple.JSONObject;
@@ -14,6 +15,16 @@ public class Utils {
         textView.setText(text);
 
         return textView;
+    }
+
+    public static NumberPicker createNumberPicker(AppCompatActivity context, Integer value) {
+        NumberPicker numberPicker = new NumberPicker(context);
+
+        numberPicker.setMaxValue(100);
+        numberPicker.setMinValue(0);
+        numberPicker.setValue(value);
+
+        return numberPicker;
     }
 
     public static JSONObject toJson(String jsonString) {
