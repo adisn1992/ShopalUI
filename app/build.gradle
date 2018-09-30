@@ -28,4 +28,6 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:11.8.0'
     implementation files('lib/commons-io-2.6.jar')
     implementation files('lib/json-simple-1.1.jar')
+    implementation files('lib/picasso-2.0.0.jar')
+    implementation 'com.android.support:design:27.1.1'
 }

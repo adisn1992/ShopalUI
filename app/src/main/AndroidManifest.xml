@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".home_Activity" />
         <activity android:name=".BarcodeScannerActivity" />
-        <activity android:name=".stock_Activity"></activity>
+        <activity android:name=".stock_Activity" />
+        <activity android:name=".shoppingList_Activity" />
     </application>
 
 </manifest>
