@@ -18,8 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".home_Activity" />
-        <activity android:name=".BarcodeScannerActivity" />
+        <activity android:name=".home_Activity"></activity>
+        <activity android:name=".BarcodeScannerActivity"></activity>
+        <activity android:name=".details_Account_Activity"></activity>
         <activity android:name=".stock_Activity"></activity>
     </application>
 

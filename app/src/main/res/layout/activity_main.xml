@@ -32,26 +32,21 @@
             android:layout_height="wrap_content"
             app:srcCompat="@mipmap/ic_launcher_foreground" />
 
-        <TextView
-            android:id="@+id/detail"
+        <Button
+            android:id="@+id/sign_out_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fadeScrollbars="true"
-            android:gravity="center"
-            android:maxLines="5"
-            android:padding="10dp"
-            android:scrollbars="vertical"
+            android:text="Exit"
             android:textColor="@android:color/white"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/signed_out"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
-
+        <!--<Button-->
+            <!--android:id="@+id/sign_out_button"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="@string/sign_out"-->
+            <!--android:theme="@style/ThemeOverlay.MyDarkButton" />-->
 
 
     </LinearLayout>

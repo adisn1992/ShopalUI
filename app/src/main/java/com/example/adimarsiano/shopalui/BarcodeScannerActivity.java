@@ -60,6 +60,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
 
                 System.out.println("response input stream");
                 InputStream responseInputStream = myConnection.getInputStream();
+
                 System.out.println("response body reader");
                 InputStreamReader responseBodyReader =
                         new InputStreamReader(responseInputStream, "UTF-8");
@@ -87,6 +88,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
 //            contentTxt.setText("Product Details: " + builder.toString());
             } catch (Exception e)
             {
+                System.out.println("I have an exception");
                 System.out.println(e);
             }
 

@@ -1,5 +1,6 @@
 package com.example.adimarsiano.shopalui;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -12,14 +13,24 @@ import android.support.v7.app.AppCompatActivity;
         import android.view.View;
         import android.widget.TextView;
 
-        import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
         import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
         import com.google.android.gms.auth.api.signin.GoogleSignInClient;
         import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
         import com.google.android.gms.common.SignInButton;
         import com.google.android.gms.common.api.ApiException;
-        import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
         import com.google.android.gms.tasks.Task;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Activity to demonstrate basic retrieval of the Google user's ID, email address, and basic
@@ -30,8 +41,9 @@ public class signIn_Activity extends AppCompatActivity implements
 
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
-
-    private GoogleSignInClient mGoogleSignInClient;
+    private String idToken;
+    public static GoogleSignInClient mGoogleSignInClient;
+    public static userAccount userDtails;
     private TextView mStatusTextView;
 
     @Override
@@ -40,11 +52,11 @@ public class signIn_Activity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         // Views
-        mStatusTextView = findViewById(R.id.status);
+        //mStatusTextView = findViewById(R.id.status);
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-
+        findViewById(R.id.sign_out_button).setOnClickListener(this);
 
         // [START configure_signin]
         // Configure sign-in to request the user's ID, email address, and basic
@@ -90,6 +102,7 @@ public class signIn_Activity extends AppCompatActivity implements
         startActivity(k);
         super.onActivityResult(requestCode, resultCode, data);
 
+
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
@@ -104,6 +117,33 @@ public class signIn_Activity extends AppCompatActivity implements
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            idToken = account.getIdToken();
+            userDtails = new userAccount();
+            userDtails.setDisplayName(account.getDisplayName());
+            userDtails.setFirstName(account.getGivenName());
+            userDtails.setLastName(account.getFamilyName());
+            userDtails.setEmail(account.getEmail());
+            userDtails.setImageUrl(account.getPhotoUrl());
+            // findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            class GetIdToken extends AsyncTask<String, String, String> {
+                @Override
+                protected String doInBackground(String[] parameters) {
+                    try {
+                        URL tokenUrl = new URL("http://192.168.1.13:8080/rest/shopal/token/" + idToken);
+                        System.out.println("id token: " + tokenUrl);
+                        // Create connection
+                        HttpURLConnection myConnection = (HttpURLConnection) tokenUrl.openConnection();
+
+                        System.out.println("response input stream");
+                        InputStream responseInputStream = myConnection.getInputStream();
+                        System.out.println("response body reader");
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                    return "";
+                }
+            }
 
             // Signed in successfully, show authenticated UI.
             updateUI(account);
@@ -123,6 +163,23 @@ public class signIn_Activity extends AppCompatActivity implements
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     // [END signIn]
+
+    // [START signOut]
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // [START_EXCLUDE]
+                     //   updateUI(null);
+                        finish();
+                        System.exit(0);
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+    // [END signOut]
+
 
     // [START revokeAccess]
     private void revokeAccess() {
@@ -144,12 +201,12 @@ public class signIn_Activity extends AppCompatActivity implements
     private void updateUI(@Nullable GoogleSignInAccount account) {
         if (account != null) {
 
-           /* mStatusTextView.setText(getString(R.string.signed_in_fmt, account.getDisplayName()));
+        //    mStatusTextView.setText(getString(R.string.signed_in_fmt, account.getDisplayName()));
 
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);*/
-            Intent k = new Intent(getApplicationContext(),home_Activity.class);
-            startActivity(k);
-            //findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            //Intent k = new Intent(getApplicationContext(),home_Activity.class);
+           // startActivity(k);
+           // findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
 
         } else {
 
@@ -167,6 +224,9 @@ public class signIn_Activity extends AppCompatActivity implements
             case R.id.sign_in_button:
                 signIn();
                 break;
+            case R.id.sign_out_button:
+                signOut();
+               break;
         }
     }
 }
