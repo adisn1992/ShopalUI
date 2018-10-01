@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -58,7 +56,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         context = this;
         table = findViewById(R.id.stock_table);
 
-        new ImportStock().execute(context, stockId);
+        new ImportStock().execute();
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -78,7 +76,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
             data.put("stockId", stockId);
 
             // get productId from button tag
-            data.put("productId", getProductIdByTag(v));
+            data.put("productId", getProductIdByDeleteButton(v));
 
             new RemoveProduct().execute(data);
         }
@@ -99,13 +97,13 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
             if (row instanceof TableRow) {
                 JSONObject product = new JSONObject();
 
-                product.put("productId", getProductIdByRow(row));
+                product.put("productId", getProductIdByTag(row));
 
-                NumberPicker available = (NumberPicker) ((TableRow) row).getChildAt(1);
-                product.put("available", available.getValue());
+                EditText available = (EditText) ((TableRow) row).getChildAt(1);
+                product.put("available", Integer.parseInt(available.getText().toString()));
 
-                NumberPicker limit = (NumberPicker) ((TableRow) row).getChildAt(2);
-                product.put("limit", limit.getValue());
+                EditText limit = (EditText) ((TableRow) row).getChildAt(2);
+                product.put("limit", Integer.parseInt(limit.getText().toString()));
 
                 productsArray.add(product);
             }
@@ -141,16 +139,11 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
 
     private class ImportStock extends AsyncTask<Object, String, JSONObject> {
 
-        private  AppCompatActivity context;
-
         @Override
         protected JSONObject doInBackground(Object[] parameters) {
             try {
-                // define context
-                context = (AppCompatActivity)parameters[0];
-
                 // Url
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/get/" + parameters[1].toString());
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/get/" + stockId);
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -179,7 +172,8 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         protected void onPostExecute(JSONObject stock) {
             try {
                 JSONObject pictures = new GetImagesUrls().execute(stockId).get();
-                fillStockTable(stock, pictures, context);
+
+                fillStockTable(stock, pictures);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -235,6 +229,9 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         protected void onPostExecute(String res) {
             Toast toast = Toast.makeText(getApplicationContext(), "Submitted", Toast.LENGTH_LONG);
             toast.show();
+            TableRow headRow = findViewById(R.id.head_row);
+            table.removeAllViews();
+            table.addView(headRow);
             new ImportStock().execute(context, stockId);
         }
     }
@@ -285,13 +282,11 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private class GetImagesUrls extends AsyncTask<Object, String, JSONObject> {
+    public static class GetImagesUrls extends AsyncTask<Object, String, JSONObject> {
         @Override
         protected JSONObject doInBackground(Object[] parameters) {
 
             try {
-
-               // a = "{\"s\":2}";
                 // Url - to product and not to stock
                 URL stockUrl = new URL("http://192.168.1.2:8080/rest/product/getImgs_stock/" +  parameters[0].toString());
                 // connection
@@ -324,7 +319,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
             View row = table.getChildAt(i);
             if (row instanceof TableRow) {
                 // find the row that contains the productId and remove it
-                if (getProductIdByRow(row) == productId){
+                if (getProductIdByTag(row) == productId){
                     table.removeView(row);
                     return;
                 }
@@ -332,44 +327,36 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    // create table structure
-    private void createStockTable(){
-        table = findViewById(R.id.stock_table);
-        head_row = findViewById(R.id.head_row);
-
-        head_row.addView(Utils.createTextView(this,"img"));
-        head_row.addView(Utils.createTextView(this,"available"));
-        head_row.addView(Utils.createTextView(this,"limit"));
-    }
-
-    // TODO
-    private void fillStockTable(JSONObject stock, JSONObject pictures, AppCompatActivity context) {
-        JSONArray productArray = null;
-        JSONArray productsImgArray = null;
+    private void fillStockTable(JSONObject stock, JSONObject pictures) {
+        // getting iterators of products and images
+        JSONArray products = null;
+        JSONArray images = null;
         JSONParser parser = new JSONParser();
+
         try {
-            productArray = (JSONArray) parser.parse(stock.get("items").toString());
-            productsImgArray = (JSONArray) parser.parse(pictures.get("productsImg").toString());
+            products = (JSONArray) parser.parse(stock.get("items").toString());
+            images = (JSONArray) parser.parse(pictures.get("productsImg").toString());
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        Iterator<JSONObject> itr_productArray = productArray.iterator();
-        Iterator<JSONObject> itr_productsImgArray = productsImgArray.iterator();
+        Iterator<JSONObject> itr_products = products.iterator();
+        Iterator<JSONObject> itr_images = images.iterator();
 
+        // iterate over products and images and builds rows
+        while (itr_products.hasNext() && itr_images.hasNext()) {
+            JSONObject product = itr_products.next();
+            JSONObject img = itr_images.next();
 
-        while (itr_productArray.hasNext() && itr_productsImgArray.hasNext()) {
-            JSONObject product = itr_productArray.next();
-            JSONObject img = itr_productsImgArray.next();
-
-            TableRow new_row =(TableRow)getLayoutInflater().inflate(R.layout.tablerow_template, null);
-
-            // adi: set min max
+            // row:
+            TableRow new_row =(TableRow)getLayoutInflater().inflate(R.layout.tablerow_stock_template, null);
+            new_row.setTag(product.get("productId").toString());
 
             // available:
             EditText available = (EditText)new_row.getChildAt(1);
             available.setText(product.get("available").toString());
+
             // limit:
             EditText limit = (EditText)new_row.getChildAt(2);
             limit.setText(product.get("limit").toString());
@@ -387,25 +374,12 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private View createNumberPickerByField(JSONObject product, String field){
-        View numberPicker = Utils.createNumberPicker(context, Integer.parseInt(product.get(field).toString()));
-
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1
-        );
-        numberPicker.setLayoutParams(param);
-
-        return numberPicker;
-    }
-
-    private Integer getProductIdByTag(View v){
+    private Integer getProductIdByDeleteButton(View v){
         String tag = v.getTag().toString();
         return Integer.parseInt(tag.substring(tag.indexOf("_") + 1));
     }
 
-    private Integer getProductIdByRow(View row){
-        return getProductIdByTag(((TableRow) row).getChildAt(0));
+    public static Integer getProductIdByTag(View view){
+        return Integer.parseInt(view.getTag().toString());
     }
 }

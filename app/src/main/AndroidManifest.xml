@@ -11,18 +11,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".signIn_Activity">
+        <activity android:name=".home_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".home_Activity"></activity>
+        <activity android:name=".shoppingList_Activity"></activity>
         <activity android:name=".BarcodeScannerActivity"></activity>
         <activity android:name=".details_Account_Activity"></activity>
+        <activity android:name=".signIn_Activity"></activity>
         <activity android:name=".stock_Activity"></activity>
-        <activity android:name=".shoppingList_Activity"></activity>
 
     </application>
 

@@ -20,48 +20,66 @@
             android:layout_centerVertical="true"
             android:scrollbars="none">
 
+
             <TableLayout
                 android:id="@+id/shoppingList_table"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginStart="16dp"
-                android:isScrollContainer="true"
-                android:stretchColumns="*"
-                app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.515"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/scrollView2">
+                android:layout_height="match_parent">
 
                 <TableRow
-                    android:id="@+id/shoppingList_head_row"
+                    android:id="@+id/head_row_shoppingList"
                     android:layout_width="match_parent"
-                    android:layout_height="12dp">
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:weightSum="4">
+
+                    <TextView
+                        android:id="@+id/head_row_shoppingList_padding01"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.65"
+                        android:gravity="center"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/head_row_shoppingList_tv1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.05"
+                        android:gravity="center"
+                        android:text="Product"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/head_row_shoppingList_tv2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.65"
+                        android:gravity="center"
+                        android:text="To Buy"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/head_row_shoppingList_padding02"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.65"
+                        android:gravity="center"
+                        android:textSize="12sp" />
 
                 </TableRow>
 
-            </TableLayout>
-        </ScrollView>
 
-        <Button
-            android:id="@+id/quantityButton"
-            android:layout_width="126dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/shoppingList_scroll"
-            android:layout_marginStart="42dp"
-            android:text="change quantities" />
+            </TableLayout>
+
+        </ScrollView>
 
         <Button
             android:id="@+id/purchaseButton"
             android:layout_width="126dp"
             android:layout_height="55dp"
-            android:layout_alignParentEnd="true"
             android:layout_below="@+id/shoppingList_scroll"
-            android:layout_marginEnd="42dp"
+            android:layout_centerHorizontal="true"
             android:text="purchase" />
 
         <TextView
@@ -71,7 +89,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:text="stock should appear her" />
+            android:text="shopping list should appear her" />
 
     </RelativeLayout>
 </LinearLayout>

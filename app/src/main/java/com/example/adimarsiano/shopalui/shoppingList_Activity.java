@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -26,8 +28,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Iterator;
 
+import static com.example.adimarsiano.shopalui.stock_Activity.getProductIdByTag;
+
 public class shoppingList_Activity extends AppCompatActivity  implements View.OnClickListener{
-    // shoppingList
     // adi: get shoppingListId!
     private String stockId = "5bb0909031e93b5b3b3c21ec";
 
@@ -41,112 +44,132 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list_);
+        context = this;
 
-        shoppingListText = (TextView)findViewById(R.id.shoppingList_text);
+        shoppingListText = findViewById(R.id.shoppingList_text);
+        table = findViewById(R.id.shoppingList_table);
 
-        purchaseButton = (Button)findViewById(R.id.purchaseButton);
+        purchaseButton = findViewById(R.id.purchaseButton);
         purchaseButton.setOnClickListener((android.view.View.OnClickListener)context);
         purchaseButton.setTag("purchaseButton");
 
-        context = this;
 
-        createShoppingListTable();
+
         new ImportShoppingList().execute();
     }
 
     @Override
     public void onClick(View button) {
-
-        String buttonTag = button.getTag().toString();
-
         if(button.getTag().toString().contains("purchaseButton")){
             clickPurchaseButton();
         }
         else{
 
         }
-
-
-        // add code to both buttons
-        // all the logic! also back!
     }
 
-    private JSONObject getQuantitiesFromTable(){
+    private void clickPurchaseButton() {
+        JSONObject data = new JSONObject();
         JSONArray productsArray = new JSONArray();
 
         // iterate over the stock table (from the second row) and build products json
-        for(int i = 1, rows = table.getChildCount(); i < rows; i++) {
+        for (int i = 1, rows = table.getChildCount(); i < rows; i++) {
+
             View row = table.getChildAt(i);
+
             if (row instanceof TableRow) {
                 JSONObject product = new JSONObject();
+                EditText toPurchase = (EditText) ((TableRow) row).getChildAt(2);
 
-                // adi: get product id by index (i-1) from stocks , need to change to take from imgs the productId
-                NumberPicker productId = (NumberPicker) ((TableRow) row).getChildAt(0);
-                product.put("productId", productId.getValue());
-
-                NumberPicker quantity = (NumberPicker) ((TableRow) row).getChildAt(1);
-                product.put("quantity", quantity.getValue());
-
-
+                product.put("productId", getProductIdByTag(row));
+                product.put("purchased", Integer.parseInt(toPurchase.getText().toString()));
                 productsArray.add(product);
             }
         }
 
-        JSONObject data = new JSONObject();
-        data.put("shoppingListId", stockId);
+        data.put("stockId", stockId);
         data.put("products", productsArray);
 
-        return data;
+        new Purchase().execute(data);
     }
 
-    // create table structure
-    private void clickPurchaseButton(){
-        new Purchase().execute(getQuantitiesFromTable());
-    }
-
-    private void createShoppingListTable(){
-        table = findViewById(R.id.shoppingList_table);
-        head_row = findViewById(R.id.shoppingList_head_row);
-
-        head_row.addView(Utils.createTextView(this,"img"));
-        head_row.addView(Utils.createTextView(this,"quantity"));
-    }
-
-    private void fillShoppingListTable(JSONObject shoppingList, JSONObject pictures) throws IOException {
-        JSONArray productArray = null;
-        JSONArray productsImgArray = null;
+    private void fillShoppingListTable(JSONObject shoppingList, JSONObject pictures) {
+        // getting iterators of products and images
+        JSONArray products = null;
+        JSONArray images = null;
         JSONParser parser = new JSONParser();
+
         try {
-            productArray = (JSONArray) parser.parse(shoppingList.get("list").toString());
-            productsImgArray = (JSONArray) parser.parse(pictures.get("productsImg").toString());
+            images = (JSONArray) parser.parse(pictures.get("productsImg").toString());
+            products = (JSONArray) parser.parse(shoppingList.get("items").toString());
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        Iterator<JSONObject> itr_productArray = productArray.iterator();
-        Iterator<JSONObject> itr_productsImgArray = productsImgArray.iterator();
+        Iterator<JSONObject> itr_images = images.iterator();
+        Iterator<JSONObject> itr_products = products.iterator();
 
+        // iterate over products and images and builds rows
+        while (itr_products.hasNext() && itr_images.hasNext()) {
+            JSONObject product = itr_products.next();
+            JSONObject img = itr_images.next();
 
-        while (itr_productArray.hasNext() && itr_productsImgArray.hasNext()) {
+            // row:
+            TableRow new_row =(TableRow)getLayoutInflater().inflate(R.layout.tablerow_shoppinglist_template, null);
+            new_row.setTag(product.get("productId").toString());
 
-            JSONObject product = itr_productArray.next();
-            JSONObject img = itr_productsImgArray.next();
+            // img:
+            ImageView imgView = (ImageView)new_row.getChildAt(1);
+            new stock_Activity.LoadImage().execute(img.get("productImg").toString(), imgView);
 
-            TableRow new_row = new TableRow(this);
-
-            //IMG: set tag by productId!
-            //String imgStr = img.get("productImg").toString();
-            //ImageView imgView = new ImageView(context);
-            //new stock_Activity.AsyncTaskLoadImage().execute(imgStr, imgView);
-            //new_row.setWeightSum(3);
-            //new_row.addView(imgView);
-
-            // adi!!!!: need to delete the first (productId) (img tag instead)
-            new_row.addView(Utils.createNumberPicker(context, Integer.parseInt(product.get("productId").toString())));
-            new_row.addView(Utils.createNumberPicker(context, Integer.parseInt(product.get("quantity").toString())));
+            // to buy:
+            EditText limit = (EditText)new_row.getChildAt(2);
+            limit.setText(product.get("toPurchase").toString());
 
             table.addView(new_row);
+        }
+    }
 
+    private class ImportShoppingList extends AsyncTask<Object, String, JSONObject> {
+
+        @Override
+        protected JSONObject doInBackground(Object[] parameters) {
+            try {
+                // Url
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/getShopList/" + stockId);
+                // connection
+                HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
+                // request type
+                urlConnection.setRequestMethod("GET");
+                // status
+                int statusCode = urlConnection.getResponseCode();
+
+                // success
+                if (statusCode ==  200) {
+                    InputStream responseInputStream = urlConnection.getInputStream();
+                    String response = IOUtils.toString(responseInputStream, "UTF_8");
+                    return Utils.toJson(response);
+                }
+                // failure
+                else{
+                    // adi: handle error
+                    return null;
+                }
+            } catch (Exception e){
+                System.out.println(e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject shoppingList) {
+            try {
+                JSONObject pictures = new stock_Activity.GetImagesUrls().execute(stockId).get();
+                fillShoppingListTable(shoppingList, pictures);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -161,7 +184,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                 data = (JSONObject)parameters[0];
 
                 // Url
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/shoppingList/purchase");
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/purchase");
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request property
@@ -197,84 +220,17 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
 
         @Override
         protected void onPostExecute(String res) {
-            new ImportShoppingList().execute(stockId);
+            TableRow headRow = findViewById(R.id.head_row_shoppingList);
+            table.removeAllViews();
+            table.addView(headRow);
+            new ImportShoppingList().execute();
+
+            //Toast toast = Toast.makeText(getApplicationContext(), "Submitted", Toast.LENGTH_LONG);
+            //toast.show();
             //adi : Toast toast = Toast.makeText(getApplicationContext(), "Submitted", Toast.LENGTH_LONG);
             //toast.show();
         }
     }
 
-    private class ImportShoppingList extends AsyncTask<Object, String, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Object[] parameters) {
-            try {
-                // Url
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/shoppingList/get/" + stockId);
-                // connection
-                HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
-                // request type
-                urlConnection.setRequestMethod("GET");
-                // status
-                int statusCode = urlConnection.getResponseCode();
-
-                // success
-                if (statusCode ==  200) {
-                    InputStream responseInputStream = urlConnection.getInputStream();
-                    String response = IOUtils.toString(responseInputStream, "UTF_8");
-                    return Utils.toJson(response);
-                }
-                // failure
-                else{
-                    // adi: handle error
-                    return null;
-                }
-            } catch (Exception e){
-                System.out.println(e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject shoppingList) {
-            JSONObject pictures = null;
-            try {
-                pictures = new GetProductsImg().execute().get();
-                fillShoppingListTable(shoppingList, pictures);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    private class GetProductsImg extends AsyncTask<Object, String, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Object[] parameters) {
-
-            try {
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/product/getImgsByShoppingList/" + stockId);
-                // connection
-                HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
-                // request type
-                urlConnection.setRequestMethod("GET");
-                // status
-                int statusCode = urlConnection.getResponseCode();
-
-                // success
-                if (statusCode ==  200) {
-                    InputStream responseInputStream = urlConnection.getInputStream();
-                    String response = IOUtils.toString(responseInputStream, "UTF_8");
-                    return Utils.toJson(response);
-                }
-                // failure
-                else{
-                    // adi: handle error
-                    return null;
-                }
-            } catch (Exception e){
-                System.out.println(e);
-                return null;
-            }
-        }
-    }
 
 }
