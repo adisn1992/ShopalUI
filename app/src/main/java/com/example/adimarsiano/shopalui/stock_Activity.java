@@ -16,6 +16,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -38,6 +40,12 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
 
     // adi: get stockId!
     private String stockId = "5bb0909031e93b5b3b3c21ec";
+    private final int BAD_REQUEST = 400;
+    private final int SUCCESS = 200;
+    private final int VOID_SUCCESS = 204;
+    private final int NOT_ACCEPTABLE = 406;
+    private final int ERROR = -1;
+
     //private String test = "{ \"_id\" : { \"$oid\" : \"5ba68a6df21c55ef12534b8a\"} , \"name\" : \"work\" , \"list\" : [ { \"productId\" : 1 , \"available\" : 2 , \"limit\" : 4} , { \"productId\" : 2 , \"available\" : 1 , \"limit\" : 1}]}";
 
     private TextView stockText;
@@ -138,6 +146,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
     }
 
     private class ImportStock extends AsyncTask<Object, String, JSONObject> {
+        private JSONObject response = new JSONObject();
 
         @Override
         protected JSONObject doInBackground(Object[] parameters) {
@@ -151,44 +160,64 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
                 // status
                 int statusCode = urlConnection.getResponseCode();
 
-                // success
-                if (statusCode ==  200) {
-                    InputStream responseInputStream = urlConnection.getInputStream();
-                    String response = IOUtils.toString(responseInputStream, "UTF_8");
-                    return Utils.toJson(response);
+                switch (statusCode) {
+                    case SUCCESS:
+                    case VOID_SUCCESS:
+                        InputStream responseInputStream = urlConnection.getInputStream();
+                        String stockStr = IOUtils.toString(responseInputStream, "UTF_8");
+
+                        response.put("status", SUCCESS);
+                        response.put("stock", Utils.toJson(stockStr));
+                        break;
+                    case BAD_REQUEST:
+                        response.put("status", BAD_REQUEST);
+                        break;
+                    default:
+                        response.put("status", ERROR);
+                        break;
                 }
-                // failure
-                else{
-                    // adi: handle error
-                    return null;
-                }
+
+                return response;
             } catch (Exception e){
-                System.out.println(e);
-                return null;
+                response.put("status", ERROR);
+                return response;
             }
         }
 
         @Override
-        protected void onPostExecute(JSONObject stock) {
-            try {
-                JSONObject pictures = new GetImagesUrls().execute(stockId).get();
+        protected void onPostExecute(JSONObject res) {
+            int statusCode = Integer.parseInt(res.get("status").toString());
 
-                fillStockTable(stock, pictures);
-            } catch (Exception e) {
-                e.printStackTrace();
+            switch (statusCode) {
+                case SUCCESS:
+                    try {
+                        JSONObject pictures = new GetImagesUrls().execute(stockId).get();
+                        JSONObject stock = (JSONObject) res.get("stock");
+
+                        fillStockTable(stock, pictures);
+                    } catch (Exception e) {
+                        createAndShowToast("Error: status code - unknown");
+                    }
+                    break;
+                case BAD_REQUEST:
+                    createAndShowToast("sorry, your stock or some product is invalid");
+                    break;
+                default:
+                    createAndShowToast("Error: status code - unknown");
+                    break;
             }
         }
     }
 
-    private class SubmitTable extends AsyncTask<Object, Void, String> {
-
+    private class SubmitTable extends AsyncTask<Object, Void, JSONObject> {
+        private JSONObject response = new JSONObject();
         private  JSONObject data;
 
         @Override
-        protected String doInBackground(Object[] parameters) {
+        protected JSONObject doInBackground(Object[] parameters) {
             try {
                 // define postData
-                data = (JSONObject)parameters[0];
+                data = (JSONObject) parameters[0];
 
                 // Url
                 URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/update/");
@@ -205,43 +234,64 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
                     writer.flush();
                 }
 
-                // status
                 int statusCode = urlConnection.getResponseCode();
 
-                // success
-                if (statusCode ==  200) {
-                    InputStream responseInputStream = urlConnection.getInputStream();
-                    String response = IOUtils.toString(responseInputStream, "UTF_8");
-                    return response;
+                switch (statusCode) {
+                    case SUCCESS:
+                    case VOID_SUCCESS:
+                        response.put("status", SUCCESS);
+                        break;
+                    case BAD_REQUEST:
+                        response.put("status", BAD_REQUEST);
+                        break;
+                    case NOT_ACCEPTABLE:
+                        response.put("status", NOT_ACCEPTABLE);
+                        break;
+                    default:
+                        response.put("status", ERROR);
+                        break;
                 }
-                // failure
-                else{
-                    // adi: handle error
-                    return null;
-                }
-            } catch (Exception e){
-                System.out.println(e);
-                return null;
+
+                return response;
+
+            } catch (Exception e) {
+                response.put("status", ERROR);
+                return response;
             }
         }
 
+
         @Override
-        protected void onPostExecute(String res) {
-            Toast toast = Toast.makeText(getApplicationContext(), "Submitted", Toast.LENGTH_LONG);
-            toast.show();
-            TableRow headRow = findViewById(R.id.head_row);
-            table.removeAllViews();
-            table.addView(headRow);
-            new ImportStock().execute(context, stockId);
+        protected void onPostExecute(JSONObject res) {
+            int statusCode = Integer.parseInt(res.get("status").toString());
+
+            switch (statusCode) {
+                case SUCCESS:
+                    createAndShowToast("Submitted");
+                    refreshTable();
+                    break;
+                case BAD_REQUEST:
+                    createAndShowToast("sorry, your stock or sime product is invalid");
+                    break;
+                case NOT_ACCEPTABLE:
+                    createAndShowToast("sorry, something went wrong");
+                    break;
+                default:
+                    createAndShowToast("Error: status code - unknown");
+                    break;
+            }
         }
     }
 
-    private class RemoveProduct extends AsyncTask<Object, String, String> {
+    private class RemoveProduct extends AsyncTask<Object, String, JSONObject> {
+        private JSONObject response = new JSONObject();
+        private Integer productId = null;
 
         @Override
-        protected String doInBackground(Object[] parameters) {
+        protected JSONObject doInBackground(Object[] parameters) {
             try {
                 JSONObject data = (JSONObject)parameters[0];
+                productId = Integer.parseInt(data.get("productId").toString());
 
                 // Url
                 URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/remove/");
@@ -255,29 +305,52 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
                     writer.write(data.toJSONString());
                     writer.flush();
                 }
-                // status
+
                 int statusCode = urlConnection.getResponseCode();
 
-                // success
-                if (statusCode ==  200) {
-                    InputStream responseInputStream = urlConnection.getInputStream();
-                    String response = IOUtils.toString(responseInputStream, "UTF_8");
-                    return response;
+                switch (statusCode) {
+                    case SUCCESS:
+                    case VOID_SUCCESS:
+                        response.put("status", SUCCESS);
+                        break;
+                    case BAD_REQUEST:
+                        response.put("status", BAD_REQUEST);
+                        break;
+                    case NOT_ACCEPTABLE:
+                        response.put("status", NOT_ACCEPTABLE);
+                        break;
+                    default:
+                        response.put("status", ERROR);
+                        break;
                 }
-                // failure
-                else{
-                    // adi: handle error
-                    return null;
-                }
-            } catch (Exception e){
-                System.out.println(e);
-                return null;
+
+                return response;
+
+            } catch (Exception e) {
+                response.put("status", ERROR);
+                return response;
             }
         }
 
         @Override
-        protected void onPostExecute(String productId) {
-            removeRowByProductId(Integer.parseInt(productId));
+        protected void onPostExecute(JSONObject res) {
+            int statusCode = Integer.parseInt(res.get("status").toString());
+
+            switch (statusCode) {
+                case SUCCESS:
+                    createAndShowToast("product was removed");
+                    removeRowByProductId(productId);
+                    break;
+                case BAD_REQUEST:
+                    createAndShowToast("sorry, your stock or sime product is invalid");
+                    break;
+                case NOT_ACCEPTABLE:
+                    createAndShowToast("sorry, something went wrong");
+                    break;
+                default:
+                    createAndShowToast("Error: status code - unknown");
+                    break;
+            }
         }
 
     }
@@ -288,7 +361,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
 
             try {
                 // Url - to product and not to stock
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/product/getImgs_stock/" +  parameters[0].toString());
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/product/getImgs/" +  parameters[0].toString());
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -297,14 +370,13 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
                 int statusCode = urlConnection.getResponseCode();
 
                 // success
-                if (statusCode ==  200) {
+                if (statusCode == 200 || statusCode ==  204 ) {
                     InputStream responseInputStream = urlConnection.getInputStream();
                     String response = IOUtils.toString(responseInputStream, "UTF_8");
                     return Utils.toJson(response);
                 }
                 // failure
                 else{
-                    // adi: handle error
                     return null;
                 }
             } catch (Exception e){
@@ -382,4 +454,17 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
     public static Integer getProductIdByTag(View view){
         return Integer.parseInt(view.getTag().toString());
     }
+
+    private void createAndShowToast(String text){
+        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    private void refreshTable(){
+        TableRow headRow = findViewById(R.id.head_row);
+        table.removeAllViews();
+        table.addView(headRow);
+        new ImportStock().execute(context, stockId);
+    }
+
 }

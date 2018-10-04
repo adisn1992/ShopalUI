@@ -33,6 +33,11 @@ import static com.example.adimarsiano.shopalui.stock_Activity.getProductIdByTag;
 public class shoppingList_Activity extends AppCompatActivity  implements View.OnClickListener{
     // adi: get shoppingListId!
     private String stockId = "5bb0909031e93b5b3b3c21ec";
+    private static final int BAD_REQUEST = 400;
+    private static final int SUCCESS = 200;
+    private final int VOID_SUCCESS = 204;
+    private static final int NOT_ACCEPTABLE = 406;
+    private static final int ERROR = -1;
 
     private TextView shoppingListText;
     private TableLayout table;
@@ -132,6 +137,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
     }
 
     private class ImportShoppingList extends AsyncTask<Object, String, JSONObject> {
+        private JSONObject response = new JSONObject();
 
         @Override
         protected JSONObject doInBackground(Object[] parameters) {
@@ -145,43 +151,63 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                 // status
                 int statusCode = urlConnection.getResponseCode();
 
-                // success
-                if (statusCode ==  200) {
-                    InputStream responseInputStream = urlConnection.getInputStream();
-                    String response = IOUtils.toString(responseInputStream, "UTF_8");
-                    return Utils.toJson(response);
+                switch (statusCode) {
+                    case SUCCESS:
+                    case VOID_SUCCESS:
+                        InputStream responseInputStream = urlConnection.getInputStream();
+                        String shoppingListStr = IOUtils.toString(responseInputStream, "UTF_8");
+
+                        response.put("status", SUCCESS);
+                        response.put("shoppingList", Utils.toJson(shoppingListStr));
+                        break;
+                    case BAD_REQUEST:
+                        response.put("status", BAD_REQUEST);
+                        break;
+                    default:
+                        response.put("status", ERROR);
+                        break;
                 }
-                // failure
-                else{
-                    // adi: handle error
-                    return null;
-                }
+
+                return response;
             } catch (Exception e){
-                System.out.println(e);
-                return null;
+                response.put("status", ERROR);
+                return response;
             }
         }
 
         @Override
-        protected void onPostExecute(JSONObject shoppingList) {
-            try {
-                JSONObject pictures = new stock_Activity.GetImagesUrls().execute(stockId).get();
-                fillShoppingListTable(shoppingList, pictures);
-            } catch (Exception e) {
-                e.printStackTrace();
+        protected void onPostExecute(JSONObject res) {
+            int statusCode = Integer.parseInt(res.get("status").toString());
+
+            switch (statusCode) {
+                case SUCCESS:
+                    try {
+                        JSONObject pictures = new stock_Activity.GetImagesUrls().execute(stockId).get();
+                        JSONObject shoppingList = (JSONObject) res.get("shoppingList");
+                        fillShoppingListTable(shoppingList, pictures);
+                    } catch (Exception e) {
+                        createAndShowToast("Error: something went wrong");
+                    }
+                    break;
+                case BAD_REQUEST:
+                    createAndShowToast("sorry, your stock or some product is invalid");
+                    break;
+                default:
+                    createAndShowToast("Error: status code - unknown");
+                    break;
             }
         }
     }
 
-    private class Purchase extends AsyncTask<Object, Void, String> {
-
+    private class Purchase extends AsyncTask<Object, Void, JSONObject> {
+        private JSONObject response = new JSONObject();
         private  JSONObject data;
 
         @Override
-        protected String doInBackground(Object[] parameters) {
+        protected JSONObject doInBackground(Object[] parameters) {
             try {
                 // define postData
-                data = (JSONObject)parameters[0];
+                data = (JSONObject) parameters[0];
 
                 // Url
                 URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/purchase");
@@ -201,36 +227,59 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                 // status
                 int statusCode = urlConnection.getResponseCode();
 
-                // success
-                if (statusCode ==  200) {
-                    InputStream responseInputStream = urlConnection.getInputStream();
-                    String response = IOUtils.toString(responseInputStream, "UTF_8");
-                    return response;
+                switch (statusCode) {
+                    case SUCCESS:
+                    case VOID_SUCCESS:
+                        response.put("status", SUCCESS);
+                        break;
+                    case BAD_REQUEST:
+                        response.put("status", BAD_REQUEST);
+                        break;
+                    default:
+                        response.put("status", ERROR);
+                        break;
                 }
-                // failure
-                else{
-                    // adi: handle error
-                    return null;
-                }
+
+                return response;
+
             } catch (Exception e){
-                System.out.println(e);
-                return null;
-            }
+                response.put("status", ERROR);
+                return response;
+             }
         }
 
         @Override
-        protected void onPostExecute(String res) {
-            TableRow headRow = findViewById(R.id.head_row_shoppingList);
-            table.removeAllViews();
-            table.addView(headRow);
-            new ImportShoppingList().execute();
+        protected void onPostExecute(JSONObject res) {
+            int statusCode = Integer.parseInt(res.get("status").toString());
 
-            //Toast toast = Toast.makeText(getApplicationContext(), "Submitted", Toast.LENGTH_LONG);
-            //toast.show();
-            //adi : Toast toast = Toast.makeText(getApplicationContext(), "Submitted", Toast.LENGTH_LONG);
-            //toast.show();
+            switch (statusCode) {
+                case SUCCESS:
+                    createAndShowToast("Product was purchased");
+                    refreshTable();
+                    break;
+                case BAD_REQUEST:
+                    createAndShowToast("sorry, your stock or sime product is invalid");
+                    break;
+                case NOT_ACCEPTABLE:
+                    createAndShowToast("sorry, something went wrong");
+                    break;
+                default:
+                    createAndShowToast("Error: status code - unknown");
+                    break;
+            }
         }
     }
 
+    private void createAndShowToast(String text){
+        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    private void refreshTable(){
+        TableRow headRow = findViewById(R.id.head_row_shoppingList);
+        table.removeAllViews();
+        table.addView(headRow);
+        new ImportShoppingList().execute();
+    }
 
 }
