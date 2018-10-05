@@ -52,7 +52,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
         protected String doInBackground(String[] parameters) {
             try {
                 System.out.println("running in new thread");
-                URL shopalUrl = new URL("http://192.168.1.13:8080/rest/shopal/product/" + parameters[0].toString());
+                URL shopalUrl = new URL("http://192.168.1.3:8080/rest/shopal/product/" + parameters[0].toString());
 
                 System.out.println("url: " + shopalUrl);
                 // Create connection

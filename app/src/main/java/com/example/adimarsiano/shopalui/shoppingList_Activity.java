@@ -6,10 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -21,7 +18,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -61,6 +57,19 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
 
 
         new ImportShoppingList().execute();
+
+        JSONObject data = new JSONObject();
+
+        Integer productId = 15;
+        Integer limit = 9;
+        Integer available  = 3;
+
+        data.put("stockId", stockId);
+        data.put("productId", productId);
+        data.put("limit", limit);
+        data.put("available", available);
+
+        new AddProduct().execute(data);
     }
 
     @Override
@@ -143,7 +152,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
         protected JSONObject doInBackground(Object[] parameters) {
             try {
                 // Url
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/getShopList/" + stockId);
+                URL stockUrl = new URL("http://192.168.1.3:8080/rest/stock/getShopList/" + stockId);
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -210,7 +219,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                 data = (JSONObject) parameters[0];
 
                 // Url
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/purchase");
+                URL stockUrl = new URL("http://192.168.1.3:8080/rest/stock/purchase");
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request property
@@ -281,5 +290,268 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
         table.addView(headRow);
         new ImportShoppingList().execute();
     }
+
+
+
+
+
+
+    // TODO hey Gal this is fot you :) for barcode:
+    // before any method there is a little example how to use it
+    // assuming productId = barcode
+    // copy createAndShowToast to barcode because it cannot be static - what it does? it creates toast (little alert to the user that showed up and disappeared after a few seconds)
+    // stockId should be known by barcode class as it known here by shoppingList_Activity
+    // there is a little problem with IsProductExist , we cannot return a value - only void, so please talk with me and we will find a solution
+    // i am here for any question!
+
+
+    /*
+        JSONObject data = new JSONObject();
+
+        stockId = string
+        productId = Integer (the barcode)
+
+        data.put("stockId", stockId);
+        data.put("productId", productId);
+
+        new Trash().execute(data);
+     */
+    private class Trash extends AsyncTask<Object, Void, JSONObject> {
+        private JSONObject response = new JSONObject();
+        private  JSONObject data;
+
+        @Override
+        protected JSONObject doInBackground(Object[] parameters) {
+            try {
+                // define postData
+                data = (JSONObject) parameters[0];
+
+                // Url
+                URL stockUrl = new URL("http://192.168.1.3:8080/rest/stock/productToTrash");
+                // connection
+                HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
+                // request property
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                // request type
+                urlConnection.setRequestMethod("PUT");
+                // send data
+                if (data != null) {
+                    OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
+                    writer.write(data.toString());
+                    writer.flush();
+                }
+
+                // status
+                int statusCode = urlConnection.getResponseCode();
+
+                switch (statusCode) {
+                    case SUCCESS:
+                    case VOID_SUCCESS:
+                        response.put("status", SUCCESS);
+                        break;
+                    case BAD_REQUEST:
+                        response.put("status", BAD_REQUEST);
+                        break;
+                    default:
+                        response.put("status", ERROR);
+                        break;
+                }
+
+                return response;
+
+            } catch (Exception e){
+                response.put("status", ERROR);
+                return response;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject res) {
+            int statusCode = Integer.parseInt(res.get("status").toString());
+
+            switch (statusCode) {
+                case SUCCESS:
+                    // createAndShowToast : create toast (little alert to the user that showed up and disappeared after a few seconds)
+                    createAndShowToast("Product was thrown into the trash");
+                    // gal: do what you want here :) this is the code after you throw the product.
+                    break;
+                case BAD_REQUEST:
+                    createAndShowToast("sorry, your stock or sime product is invalid");
+                    break;
+                case NOT_ACCEPTABLE:
+                    createAndShowToast("sorry, something went wrong");
+                    break;
+                default:
+                    createAndShowToast("Error: status code - unknown");
+                    break;
+            }
+        }
+    }
+
+
+    /*
+        new IsProductExist().execute(productId);
+     */
+    private class IsProductExist extends AsyncTask<Object, String, JSONObject> {
+        private JSONObject response = new JSONObject();
+
+        @Override
+        protected JSONObject doInBackground(Object[] parameters) {
+            try {
+                Integer productId = Integer.parseInt(parameters[0].toString());
+                // Url
+                URL stockUrl = new URL("http://192.168.1.3:8080/rest/stock/isProductExistInStock/" + stockId + "/" + productId);
+                // connection
+                HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
+                // request type
+                urlConnection.setRequestMethod("GET");
+                // status
+                int statusCode = urlConnection.getResponseCode();
+
+                switch (statusCode) {
+                    case SUCCESS:
+                    case VOID_SUCCESS:
+                        InputStream responseInputStream = urlConnection.getInputStream();
+                        String res = IOUtils.toString(responseInputStream, "UTF_8");
+
+                        response.put("status", SUCCESS);
+                        response.put("result", res);
+                        break;
+                    case BAD_REQUEST:
+                        response.put("status", BAD_REQUEST);
+                        break;
+                    default:
+                        response.put("status", ERROR);
+                        break;
+                }
+
+                return response;
+            } catch (Exception e){
+                response.put("status", ERROR);
+                return response;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject res) {
+            int statusCode = Integer.parseInt(res.get("status").toString());
+
+            switch (statusCode) {
+                case SUCCESS:
+                    try {
+                        String productExists = res.get("result").toString();
+                        // call here for a method to do what you want
+                        // pay attention! onPostExecute can return only a void
+                        // so.. there is no way to return the result
+                        // you can talk with me (Marsi) when you will get here, i have some ideas how to figure it out
+                    } catch (Exception e) {
+                        createAndShowToast("Error: something went wrong");
+                    }
+                    break;
+                case BAD_REQUEST:
+                    createAndShowToast("sorry, your stock or some product is invalid");
+                    break;
+                default:
+                    createAndShowToast("Error: status code - unknown");
+                    break;
+            }
+        }
+    }
+
+
+    /*
+    JSONObject data = new JSONObject();
+
+    stockId = string
+    productId, limit, available  = Integer
+
+    data.put("stockId", stockId);
+    data.put("productId", productId);
+    data.put("limit", limit);
+    data.put("available", available);
+
+    new AddProduct().execute(data);
+ */
+    private class AddProduct extends AsyncTask<Object, Void, JSONObject> {
+        private JSONObject response = new JSONObject();
+        private  JSONObject data;
+
+        @Override
+        protected JSONObject doInBackground(Object[] parameters) {
+            try {
+                // define postData
+                data = (JSONObject) parameters[0];
+
+                // Url
+                URL stockUrl = new URL("http://192.168.1.3:8080/rest/stock/addProduct/");
+                // connection
+                HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
+                // request property
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                // request type
+                urlConnection.setRequestMethod("POST");
+                // send data
+                if (data != null) {
+                    OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
+                    writer.write(data.toString());
+                    writer.flush();
+                }
+
+                // status
+                int statusCode = urlConnection.getResponseCode();
+
+                switch (statusCode) {
+                    case SUCCESS:
+                    case VOID_SUCCESS:
+                        response.put("status", SUCCESS);
+                        break;
+                    case BAD_REQUEST:
+                        response.put("status", BAD_REQUEST);
+                        break;
+                    default:
+                        response.put("status", ERROR);
+                        break;
+                }
+
+                return response;
+
+            } catch (Exception e){
+                response.put("status", ERROR);
+                return response;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject res) {
+            int statusCode = Integer.parseInt(res.get("status").toString());
+
+            switch (statusCode) {
+                case SUCCESS:
+                    // createAndShowToast : create toast (little alert to the user that showed up and disappeared after a few seconds)
+                    createAndShowToast("Product has been added");
+                    // gal: do what you want here :) this is the code after you added the product.
+                    break;
+                case BAD_REQUEST:
+                    createAndShowToast("sorry, your stock or sime product is invalid");
+                    break;
+                case NOT_ACCEPTABLE:
+                    createAndShowToast("sorry, something went wrong");
+                    break;
+                default:
+                    createAndShowToast("Error: status code - unknown");
+                    break;
+            }
+        }
+    }
+
+
+
+
+    /*
+    private void createAndShowToast(String text){
+        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+        toast.show();
+    }
+     */
 
 }
