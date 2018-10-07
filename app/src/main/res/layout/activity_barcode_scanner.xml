@@ -1,43 +1,164 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_grey_500"
     tools:context=".BarcodeScannerActivity">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/linearLayout"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="3"
-        android:gravity="center_horizontal">
-
-        <Button
-            android:id="@+id/scan_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/scan"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/scan_format"
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:text="@string/title_text"
+            android:textColor="@android:color/white"
+            android:textSize="36sp" />
+
+        <ImageView
+            android:id="@+id/imageView3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="148dp"
-            android:textIsSelectable="true"
-            app:layout_constraintStart_toStartOf="@+id/scan_content"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="63dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.5"
+            app:srcCompat="@mipmap/ic_launcher_foreground" />
 
-        <TextView
-            android:id="@+id/scan_content"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textIsSelectable="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scan_format" />
-    </android.support.constraint.ConstraintLayout>
-</android.support.constraint.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="492dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="329dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/BarcodeScannerTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="Barcode Scanner"
+                    android:textAllCaps="false"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="#ffffff"
+                    app:fontFamily="casual" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="495dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="208dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/scan_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="205dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginRight="30dp"
+                            android:background="#ffffff"
+                            android:clickable="false"
+                            android:lineSpacingExtra="14sp"
+                            android:paddingLeft="50dp"
+                            android:shadowDx="10"
+                            android:shadowDy="10"
+                            android:shadowRadius="20"
+                            android:text="What Would You Like To Do?"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                            android:textColor="@color/blue_grey_500"
+                            android:textSize="30sp"
+                            android:textStyle="normal|bold"
+                            tools:background="#fefeff" />
+                    </LinearLayout>
+                </ScrollView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="386dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="40dp"
+                android:layout_weight="1"
+                android:dividerPadding="10dp"
+                android:orientation="horizontal"
+                tools:divider="@color/blue_grey_600">
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/darker_gray"
+                    android:gravity="bottom|end">
+
+                    <Button
+                        android:id="@+id/add_product_barcode_button"
+                        android:layout_width="174dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Add Product" />
+
+                    <Button
+                        android:id="@+id/delete_product_barcode_button"
+                        android:layout_width="191dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="Throw Product" />
+
+                    <Button
+                        android:id="@+id/scan_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:enabled="false"
+                        android:text="@string/scan" />
+                    <!--Button
+                        android:id="@+id/scan_button"
+                        android:layout_width="400dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="100dp"
+                        android:layout_marginTop="60dp"
+                        android:layout_weight="1"
+                        android:text="@string/scan"
+                        android:layout_alignParentBottom="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:layout_constraintHorizontal_bias="parent" /-->
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
