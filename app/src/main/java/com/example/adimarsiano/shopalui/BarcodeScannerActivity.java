@@ -80,10 +80,6 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
             scanBtn.setEnabled(true);
             addBtn.setEnabled(false);
             deleteBtn.setEnabled(false);
-            contentTxt = (TextView) findViewById(R.id.scan_content);
-            contentTxt.setGravity(Gravity.CENTER_HORIZONTAL);
-            contentTxt.setTextSize(30);
-            contentTxt.setText("Please Scan Your Product...");
         }
         //delete product
         if (v.getId() == R.id.delete_product_barcode_button) {
@@ -91,10 +87,6 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
             scanBtn.setEnabled(true);
             addBtn.setEnabled(false);
             deleteBtn.setEnabled(false);
-            contentTxt = (TextView) findViewById(R.id.scan_content);
-            contentTxt.setGravity(Gravity.CENTER_HORIZONTAL);
-            contentTxt.setTextSize(30);
-            contentTxt.setText("Please Scan Your Product...");
         }
     }
 
@@ -139,6 +131,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
                         builder.append(value);
                         builder.append('\n');
 
+                        //TODO: remove barcode from display
                         // save current barcode
                         if (key.equals("product_barcode"))
                             currentBarcode = value;
@@ -464,10 +457,6 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
         deleteBtn.setEnabled(true);
         addBtn.setEnabled(true);
         isCurrProductExist = false;
-        contentTxt = (TextView) findViewById(R.id.scan_content);
-        contentTxt.setGravity(Gravity.CENTER_HORIZONTAL);
-        contentTxt.setTextSize(30);
-        contentTxt.setText("What Would You Like To Do?");
     }
 
     private void createAndShowToast(String text) {

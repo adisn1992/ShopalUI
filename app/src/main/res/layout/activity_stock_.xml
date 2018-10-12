@@ -5,6 +5,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_grey_500"
     tools:context=".signIn_Activity">
 
     <RelativeLayout
@@ -12,12 +13,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="Stock"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="#ffffff"
+            app:fontFamily="casual" />
+
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
-            android:layout_height="366dp"
+            android:layout_height="305dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
+            android:layout_marginBottom="101dp"
             android:scrollbars="none">
 
 
@@ -26,58 +43,58 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <TableRow
-                android:id="@+id/head_row"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:weightSum="4">
-
-                <TextView
-                    android:id="@+id/head_row_tv1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.1"
+                <TableRow
+                    android:id="@+id/head_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text=""
-                    android:textSize="12sp" />
+                    android:weightSum="4">
 
-                <TextView
-                    android:id="@+id/head_row_tv11"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.23"
-                    android:gravity="center"
-                    android:text="Product"
-                    android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/head_row_tv1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.1"
+                        android:gravity="center"
+                        android:text=""
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/head_row_tv2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.585"
-                    android:gravity="center"
-                    android:text="Available"
-                    android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/head_row_tv11"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Product"
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/head_row_tv3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.585"
-                    android:gravity="center"
-                    android:text="Limit"
-                    android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/head_row_tv2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.7"
+                        android:gravity="center"
+                        android:text="Available"
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:id="@+id/head_row_tv4"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.50"
-                    android:gravity="center"
-                    android:text="Delete"
-                    android:textSize="12sp" />
-            </TableRow>
+                    <TextView
+                        android:id="@+id/head_row_tv3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.7"
+                        android:gravity="center"
+                        android:text="Limit"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/head_row_tv4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.50"
+                        android:gravity="center"
+                        android:text="Delete"
+                        android:textSize="12sp" />
+                </TableRow>
 
             </TableLayout>
         </ScrollView>
@@ -90,16 +107,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
             android:text="Submit" />
-
-        <TextView
-            android:id="@+id/stock_text"
-            android:layout_width="269dp"
-            android:layout_height="38dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="stock should appear her" />
 
     </RelativeLayout>
 

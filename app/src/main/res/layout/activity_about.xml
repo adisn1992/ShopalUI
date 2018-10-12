@@ -25,22 +25,6 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/title_text"
-                android:layout_width="wrap_content"
-                android:layout_height="53dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center"
-                android:text="@string/title_text"
-                android:textColor="@android:color/white"
-                android:textSize="36sp" />
-
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="match_parent"
-                android:layout_height="71dp"
-                app:srcCompat="@mipmap/ic_launcher_foreground" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="492dp"
@@ -55,7 +39,7 @@
                     <TextView
                         android:id="@+id/detailsAccount"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:includeFontPadding="false"
@@ -69,7 +53,7 @@
                 <RelativeLayout
                     android:id="@+id/developers"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="385dp"
                     android:layout_weight="1">
 
                     <TextView
@@ -78,6 +62,7 @@
                         android:layout_height="32dp"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="0dp"
                         android:lineSpacingExtra="8sp"
                         android:text="Three young promising developers:\n"
                         android:textSize="18sp"
@@ -89,8 +74,8 @@
                         android:layout_height="68dp"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="84dp"
-                        android:layout_marginTop="50dp"
+                        android:layout_marginStart="74dp"
+                        android:layout_marginTop="73dp"
                         app:srcCompat="@drawable/galdanon" />
 
                     <TextView
@@ -99,25 +84,25 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignTop="@+id/imageView2"
-                        android:layout_marginEnd="0dp"
+                        android:layout_marginEnd="16dp"
                         android:text="Gal Danon, CEO\nNickname: Gul\nLife motto: \'Do what makes you happy\'\n" />
 
                     <ImageView
                         android:id="@+id/imageView4"
                         android:layout_width="68dp"
                         android:layout_height="175dp"
-                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
                         android:layout_alignStart="@+id/imageView2"
-                        android:layout_marginTop="92dp"
+                        android:layout_marginBottom="78dp"
                         app:srcCompat="@drawable/adisitbon" />
 
                     <TextView
                         android:id="@+id/sitbonText"
                         android:layout_width="150dp"
                         android:layout_height="72dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignStart="@+id/MarsiText"
-                        android:layout_marginTop="147dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignStart="@+id/galText"
+                        android:layout_marginBottom="127dp"
                         android:text="Adi Sitbon, CTO\nNickname: Didi\nLife motto:?\n" />
 
                     <ImageView
@@ -126,7 +111,7 @@
                         android:layout_height="67dp"
                         android:layout_alignParentBottom="true"
                         android:layout_alignStart="@+id/imageView2"
-                        android:layout_marginBottom="127dp"
+                        android:layout_marginBottom="21dp"
                         app:srcCompat="@drawable/adimarsiano" />
 
                     <TextView

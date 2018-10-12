@@ -17,22 +17,6 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title_text"
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:text="@string/title_text"
-            android:textColor="@android:color/white"
-            android:textSize="36sp" />
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="match_parent"
-            android:layout_height="71dp"
-            app:srcCompat="@mipmap/ic_launcher_foreground" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="492dp"
@@ -47,7 +31,7 @@
                 <TextView
                     android:id="@+id/detailsAccount"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:includeFontPadding="false"
@@ -69,7 +53,7 @@
                     android:layout_width="27dp"
                     android:layout_height="33dp"
                     android:layout_weight="1"
-                    android:text="Display Name:"
+                    android:text="        Display Name:"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -92,7 +76,7 @@
                     android:layout_width="230dp"
                     android:layout_height="30dp"
                     android:layout_weight="1"
-                    android:text="First Name:"
+                    android:text="        First Name:"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -115,7 +99,7 @@
                     android:layout_width="250dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
-                    android:text="Last Name:"
+                    android:text="        Last Name:"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -138,7 +122,7 @@
                     android:layout_width="155dp"
                     android:layout_height="32dp"
                     android:layout_weight="1"
-                    android:text="Email:"
+                    android:text="        Email:"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -152,7 +136,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="322dp"
                 android:layout_weight="1"
                 android:orientation="horizontal"></LinearLayout>
 

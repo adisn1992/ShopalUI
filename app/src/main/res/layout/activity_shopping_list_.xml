@@ -5,6 +5,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_grey_500"
     tools:context=".shoppingList_Activity">
 
     <RelativeLayout
@@ -12,10 +13,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="96dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="Shopping List"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="#ffffff"
+            app:fontFamily="casual" />
+
         <ScrollView
             android:id="@+id/shoppingList_scroll"
             android:layout_width="match_parent"
-            android:layout_height="366dp"
+            android:layout_height="299dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:scrollbars="none">
@@ -75,15 +91,6 @@
             android:layout_below="@+id/shoppingList_scroll"
             android:layout_centerHorizontal="true"
             android:text="purchase" />
-
-        <TextView
-            android:id="@+id/shoppingList_text"
-            android:layout_width="269dp"
-            android:layout_height="38dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:text="shopping list should appear her" />
 
     </RelativeLayout>
 </LinearLayout>
