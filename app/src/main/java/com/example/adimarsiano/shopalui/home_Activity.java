@@ -25,6 +25,7 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
     //TextView tv1;
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mStatusTextView;
+    private String stockId = "";
 
 
     private void updateUI(@Nullable GoogleSignInAccount account) {
@@ -60,6 +61,10 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Bundle b = getIntent().getExtras();
+        if(b != null)
+            stockId = b.getString("stockId");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -123,6 +128,11 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
 
     public void barcodeScanner(View view){
         Intent startBarcodeScannerActivity = new Intent(this, BarcodeScannerActivity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("stockId", stockId);
+        startBarcodeScannerActivity.putExtras(bundle);
+
         startActivity(startBarcodeScannerActivity);
     }
 
@@ -133,6 +143,11 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
 
     public void shoppingList(View view){
         Intent startShoppingListActivity = new Intent(this, shoppingList_Activity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("stockId", stockId);
+        startShoppingListActivity.putExtras(bundle);
+
         startActivity(startShoppingListActivity);
     }
 
@@ -143,6 +158,11 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
 
     public void stock(View view){
         Intent startStockActivity = new Intent(this, stock_Activity.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putString("stockId", stockId);
+        startStockActivity.putExtras(bundle);
+
         startActivity(startStockActivity);
     }
 

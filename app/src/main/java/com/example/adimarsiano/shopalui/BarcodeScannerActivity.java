@@ -30,7 +30,7 @@ import java.net.URL;
 
 public class BarcodeScannerActivity extends AppCompatActivity implements OnClickListener {
     // adi: get shoppingListId!
-    private String stockId = "5bb880e2ecd24eddd466d7ef";
+    private String stockId = "";
     private static final int BAD_REQUEST = 400;
     private static final int SUCCESS = 200;
     private static final int PRODUCT_NOT_EXIST = 300;
@@ -49,6 +49,10 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Bundle b = getIntent().getExtras();
+        if(b != null)
+            stockId = b.getString("stockId");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode_scanner);
 
@@ -105,7 +109,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
         protected String doInBackground(String[] parameters) {
             try {
                 System.out.println("running in new thread");
-                URL shopalUrl = new URL("http://192.168.1.106:8080/rest/shopal/product/" + parameters[0].toString());
+                URL shopalUrl = new URL("http://192.168.1.2:8080/rest/shopal/product/" + parameters[0].toString());
 
                 System.out.println("url: " + shopalUrl);
                 // Create connection
@@ -211,7 +215,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
                     // define postData
                     data = (JSONObject) parameters[0];
                     // Url
-                    URL stockUrl = new URL("http://192.168.1.106:8080/rest/stock/productToTrash");
+                    URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/productToTrash");
                     // connection
                     HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                     // request property
@@ -298,7 +302,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
             try {
                 Long productId = Long.parseLong(parameters[0].toString());
                 // Url
-                URL stockUrl = new URL("http://192.168.1.106:8080/rest/stock/isProductExistInStock/" + stockId + "/" + productId);
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/isProductExistInStock/" + stockId + "/" + productId);
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -390,7 +394,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
                     data = (JSONObject) parameters[0];
 
                     // Url
-                    URL stockUrl = new URL("http://192.168.1.106:8080/rest/stock/addProduct/");
+                    URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/addProduct/");
                     // connection
                     HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                     // request property

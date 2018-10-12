@@ -28,7 +28,7 @@ import static com.example.adimarsiano.shopalui.stock_Activity.getProductIdByTag;
 
 public class shoppingList_Activity extends AppCompatActivity  implements View.OnClickListener {
     // adi: get shoppingListId!
-    private String stockId = "5bb0909031e93b5b3b3c21ec";
+    private String stockId = "";
     private static final int BAD_REQUEST = 400;
     private static final int SUCCESS = 200;
     private final int VOID_SUCCESS = 204;
@@ -43,6 +43,10 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Bundle b = getIntent().getExtras();
+        if(b != null)
+            stockId = b.getString("stockId");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list_);
         context = this;
@@ -144,7 +148,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
         protected JSONObject doInBackground(Object[] parameters) {
             try {
                 // Url
-                URL stockUrl = new URL("http://192.168.1.12:8080/rest/stock/getShopList/" + stockId);
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/getShopList/" + stockId);
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -211,7 +215,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                 data = (JSONObject) parameters[0];
 
                 // Url
-                URL stockUrl = new URL("http://192.168.1.12:8080/rest/stock/purchase");
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/purchase");
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request property

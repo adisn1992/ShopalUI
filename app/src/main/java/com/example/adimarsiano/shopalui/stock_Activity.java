@@ -41,7 +41,7 @@ import org.json.simple.parser.ParseException;
 public class stock_Activity extends AppCompatActivity implements View.OnClickListener{
 
     // adi: get stockId!
-    private String stockId = "5bb0909031e93b5b3b3c21ec";
+    private String stockId = "";
     private final int BAD_REQUEST = 400;
     private final int SUCCESS = 200;
     private final int VOID_SUCCESS = 204;
@@ -58,6 +58,10 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Bundle b = getIntent().getExtras();
+        if(b != null)
+            stockId = b.getString("stockId");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_);
 
@@ -154,7 +158,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         protected JSONObject doInBackground(Object[] parameters) {
             try {
                 // Url
-                URL stockUrl = new URL("http://192.168.1.12:8080/rest/stock/get/" + stockId);
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/get/" + stockId);
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -226,7 +230,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
                 data = (JSONObject) parameters[0];
 
                 // Url
-                URL stockUrl = new URL("http://192.168.1.12:8080/rest/stock/update/");
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/update/");
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request property
@@ -300,7 +304,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
                 productId = Long.parseLong(data.get("productId").toString());
 
                 // Url
-                URL stockUrl = new URL("http://192.168.1.12:8080/rest/stock/remove/");
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/remove/");
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -367,7 +371,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
 
             try {
                 // Url - to product and not to stock
-                URL stockUrl = new URL("http://192.168.1.12:8080/rest/product/getImgs/" +  parameters[0].toString());
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/product/getImgs/" +  parameters[0].toString());
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
