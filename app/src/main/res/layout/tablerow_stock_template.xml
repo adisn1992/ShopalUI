@@ -11,7 +11,7 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="65dp"
-        android:layout_weight="1.1"
+        android:layout_weight="0.8"
         android:gravity="center"
         app:srcCompat="@drawable/unknown_pic" />
 
@@ -39,7 +39,7 @@
     <ImageButton
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="0.8"
         android:gravity="center"
         android:src="@drawable/ic_action_trash"
         android:textSize="12sp" />

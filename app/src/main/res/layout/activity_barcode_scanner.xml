@@ -53,7 +53,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="\nPlease choose \'Add Product To Stock\'\n or \'Throw Product\' then press \'scan\'"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 

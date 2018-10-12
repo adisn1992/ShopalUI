@@ -65,7 +65,6 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_);
 
-        stockText = findViewById(R.id.stock_text);
         submitButton = findViewById(R.id.stock_submitButton);
         context = this;
         table = findViewById(R.id.stock_table);

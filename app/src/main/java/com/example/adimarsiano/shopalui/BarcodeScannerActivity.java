@@ -59,8 +59,6 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
         scanBtn = (Button) findViewById(R.id.scan_button);
         addBtn = (Button) findViewById(R.id.add_product_barcode_button);
         deleteBtn = (Button) findViewById(R.id.delete_product_barcode_button);
-        contentTxt = (TextView) findViewById(R.id.scan_content);
-        contentTxt.setGravity(Gravity.CENTER_HORIZONTAL);
 
         scanBtn.setOnClickListener(this);
         addBtn.setOnClickListener(this);
