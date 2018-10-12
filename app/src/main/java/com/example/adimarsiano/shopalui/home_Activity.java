@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -19,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.zxing.intergration.android.IntentIntegrator;
 
 public class home_Activity extends AppCompatActivity implements View.OnClickListener {
 
@@ -26,7 +29,7 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mStatusTextView;
     private String stockId = "";
-
+    private ImageButton infoBtn;
 
     private void updateUI(@Nullable GoogleSignInAccount account) {
         if (account != null) {
@@ -78,6 +81,8 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
 
 
         mGoogleSignInClient = signIn_Activity.mGoogleSignInClient;
+        infoBtn = (ImageButton) findViewById(R.id.infoButton);
+        infoBtn.setOnClickListener(this);
 //        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 //                .requestEmail()
 //                .build();
@@ -123,6 +128,10 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
                         .setNegativeButton("No", null)
                         .show();
                 break;
+                //info button
+            case  R.id.infoButton :
+                    infoAlert();
+                    break;
         }
     }
 
@@ -164,6 +173,22 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
         startStockActivity.putExtras(bundle);
 
         startActivity(startStockActivity);
+    }
+
+    private void infoAlert() {
+        String msgToShow = "Welcome to Shopal. You can :\n\n-Add products to your stock via Barcode Scanner\n\n-Update how many available products and how many you wish to have of each of them in your Stock\n\n-View and update your Shopping List\n\n-Throw an used product into the trash via Barcode Scanner\n\nEnjoy :)  ";
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(msgToShow)
+                .setTitle("Hello");
+
+        // Add the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
