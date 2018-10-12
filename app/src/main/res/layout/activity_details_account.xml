@@ -51,7 +51,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:text="Details Account"
+                    android:text="Account Details "
                     android:textAllCaps="false"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textColor="#ffffff"

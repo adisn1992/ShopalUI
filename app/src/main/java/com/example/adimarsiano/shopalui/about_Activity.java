@@ -11,7 +11,7 @@ public class about_Activity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details_account);
+        setContentView(R.layout.activity_about);
     }
 
     @Override

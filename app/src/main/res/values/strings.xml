@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">shopalUI</string>
+    <string name="app_name">Shopal</string>
     <string name="title_text">Shopal\n</string>
 
     <!-- Sign-in status messages -->

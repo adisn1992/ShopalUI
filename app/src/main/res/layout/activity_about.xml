@@ -48,7 +48,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="162dp"
+                    android:layout_height="109dp"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
@@ -66,23 +66,79 @@
                         app:fontFamily="casual" />
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
+                    android:id="@+id/developers"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/dispalyName"
-                        android:layout_width="match_parent"
-                        android:layout_height="188dp"
-                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
                         android:lineSpacingExtra="8sp"
-                        android:text="Three young promising developers.\n"
+                        android:text="Three young promising developers:\n"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
-                </LinearLayout>
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="68dp"
+                        android:layout_height="68dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="84dp"
+                        android:layout_marginTop="50dp"
+                        app:srcCompat="@drawable/galdanon" />
+
+                    <TextView
+                        android:id="@+id/galText"
+                        android:layout_width="111dp"
+                        android:layout_height="69dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignTop="@+id/imageView2"
+                        android:layout_marginEnd="83dp"
+                        android:text="Gal Danon, CEO\n\nNickname: Gul\nLife motto:?\n" />
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="68dp"
+                        android:layout_height="175dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignStart="@+id/imageView2"
+                        android:layout_marginTop="92dp"
+                        app:srcCompat="@drawable/adisitbon" />
+
+                    <TextView
+                        android:id="@+id/sitbonText"
+                        android:layout_width="114dp"
+                        android:layout_height="66dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignStart="@+id/MarsiText"
+                        android:layout_marginTop="147dp"
+                        android:text="Adi Sitbon, CTO\n\nNickname: ?\nLife motto:?\n" />
+
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="70dp"
+                        android:layout_height="67dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignStart="@+id/imageView2"
+                        android:layout_marginBottom="127dp"
+                        app:srcCompat="@drawable/adimarsiano" />
+
+                    <TextView
+                        android:id="@+id/MarsiText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="68dp"
+                        android:layout_alignStart="@+id/galText"
+                        android:layout_alignTop="@+id/imageView5"
+                        android:text="Adi Marsiano, CMO\n\nNickname: Didushka\nLife motto: \'keep it simple\'\n" />
+
+
+                </RelativeLayout>
 
             </LinearLayout>
 
