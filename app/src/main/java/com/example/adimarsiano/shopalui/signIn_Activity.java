@@ -244,6 +244,7 @@ public class signIn_Activity extends AppCompatActivity implements
     // [END revokeAccess]
 
     private void updateUI(@Nullable GoogleSignInAccount account) {
+        // user did signIn before
         if (account != null) {
 
             //    mStatusTextView.setText(getString(R.string.signed_in_fmt, account.getDisplayName()));
@@ -291,78 +292,3 @@ public class signIn_Activity extends AppCompatActivity implements
         toast.show();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-             /*
-            class GetUser extends AsyncTask<String, String, String> {
-                private StringBuilder builder = new StringBuilder();
-                private TextView contentTxt;
-
-                @Override
-                protected String doInBackground(String[] parameters) {
-                    try {
-                        String firstName = parameters[0].toString();
-                        String lastName = parameters[1].toString();
-                        String email = parameters[2].toString();
-                        System.out.println("running in new thread");
-                        URL tokenUrl = new URL("http://192.168.1.11:8080/rest/shopal/user/addUser/" + firstName + "/" + lastName + "/" + email);
-                        System.out.println("id token: " + tokenUrl);
-                        // Create connection
-                        HttpURLConnection myConnection = (HttpURLConnection) tokenUrl.openConnection();
-
-                        System.out.println("response input stream");
-                        InputStream responseInputStream = myConnection.getInputStream();
-                        System.out.println("response body reader");
-                        java.io.InputStreamReader responseBodyReader =
-                                new java.io.InputStreamReader(responseInputStream, "UTF-8");
-
-                        System.out.println("json reader");
-                        android.util.JsonReader jsonReader = new android.util.JsonReader(responseBodyReader);
-
-                        System.out.println("begin object");
-                        jsonReader.beginArray(); // Start processing the JSON object
-                        jsonReader.beginObject();
-
-
-                        System.out.println(builder.toString());
-                    } catch (Exception e) {
-                        System.out.println("Exception idStock");
-                        System.out.println(e);
-                    }
-
-                    return builder.toString();
-                }
-
-                @Override
-                protected void onPostExecute(String result) {
-                 if (result.)
-
-
-                if (result.isEmpty())
-                    createAndShowToast("Sorry, something went wrong...\nPlease try again.");
-                // display scanner info alert
-                scannerResultAlert(builder.toString());
-
-                new ValidateProduct().execute(currentBarcode);
-                }
-            }
-            */
