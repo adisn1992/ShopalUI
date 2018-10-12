@@ -131,6 +131,21 @@ public class home_Activity extends AppCompatActivity implements View.OnClickList
         startActivity(startDetailsAccountActivity);
     }
 
+    public void shoppingList(View view){
+        Intent startShoppingListActivity = new Intent(this, shoppingList_Activity.class);
+        startActivity(startShoppingListActivity);
+    }
+
+    public void aboutUs(View view){
+        Intent startAboutUsActivity = new Intent(this, about_Activity.class);
+        startActivity(startAboutUsActivity);
+    }
+
+    public void stock(View view){
+        Intent startStockActivity = new Intent(this, stock_Activity.class);
+        startActivity(startStockActivity);
+    }
+
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 

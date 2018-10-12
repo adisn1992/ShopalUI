@@ -63,12 +63,14 @@
                 android:id="@+id/button5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="shoppingList"
                 android:text="View and Update Shopping List" />
 
             <Button
                 android:id="@+id/button6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="stock"
                 android:text="View and Update Stock" />
 
             <Button
@@ -82,6 +84,7 @@
                 android:id="@+id/button2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="aboutUs"
                 android:text="About Us" />
 
         </LinearLayout>

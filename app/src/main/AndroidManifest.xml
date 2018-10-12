@@ -22,6 +22,7 @@
         <activity android:name=".BarcodeScannerActivity"></activity>
         <activity android:name=".details_Account_Activity"></activity>
         <activity android:name=".shoppingList_Activity"></activity>
+        <activity android:name=".about_Activity"></activity>
         <activity android:name=".home_Activity"></activity>
     </application>
 </manifest>
