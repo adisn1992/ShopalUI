@@ -130,7 +130,7 @@ public class signIn_Activity extends AppCompatActivity implements
                 @Override
                 protected String doInBackground(String[] parameters) {
                     try {
-                        URL tokenUrl = new URL("http://192.168.1.2:8080/rest/shopal/token/" + idToken);
+                        URL tokenUrl = new URL("http://192.168.1.12:8080/rest/shopal/token/" + idToken);
                         System.out.println("id token: " + tokenUrl);
                         // Create connection
                         HttpURLConnection myConnection = (HttpURLConnection) tokenUrl.openConnection();

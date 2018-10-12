@@ -144,7 +144,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
         protected JSONObject doInBackground(Object[] parameters) {
             try {
                 // Url
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/getShopList/" + stockId);
+                URL stockUrl = new URL("http://192.168.1.12:8080/rest/stock/getShopList/" + stockId);
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -211,7 +211,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                 data = (JSONObject) parameters[0];
 
                 // Url
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/purchase");
+                URL stockUrl = new URL("http://192.168.1.12:8080/rest/stock/purchase");
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request property
