@@ -28,7 +28,7 @@
             <TextView
                 android:id="@+id/title_text"
                 android:layout_width="wrap_content"
-                android:layout_height="42dp"
+                android:layout_height="53dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:text="@string/title_text"
@@ -95,12 +95,12 @@
 
                     <TextView
                         android:id="@+id/galText"
-                        android:layout_width="111dp"
-                        android:layout_height="69dp"
+                        android:layout_width="194dp"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_alignTop="@+id/imageView2"
-                        android:layout_marginEnd="83dp"
-                        android:text="Gal Danon, CEO\n\nNickname: Gul\nLife motto:?\n" />
+                        android:layout_marginEnd="0dp"
+                        android:text="Gal Danon, CEO\nNickname: Gul\nLife motto: \'Do what makes you happy\'\n" />
 
                     <ImageView
                         android:id="@+id/imageView4"
@@ -113,12 +113,12 @@
 
                     <TextView
                         android:id="@+id/sitbonText"
-                        android:layout_width="114dp"
-                        android:layout_height="66dp"
+                        android:layout_width="150dp"
+                        android:layout_height="72dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignStart="@+id/MarsiText"
                         android:layout_marginTop="147dp"
-                        android:text="Adi Sitbon, CTO\n\nNickname: ?\nLife motto:?\n" />
+                        android:text="Adi Sitbon, CTO\nNickname: Didi\nLife motto:?\n" />
 
                     <ImageView
                         android:id="@+id/imageView5"
@@ -131,11 +131,11 @@
 
                     <TextView
                         android:id="@+id/MarsiText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="68dp"
+                        android:layout_width="183dp"
+                        android:layout_height="73dp"
                         android:layout_alignStart="@+id/galText"
                         android:layout_alignTop="@+id/imageView5"
-                        android:text="Adi Marsiano, CMO\n\nNickname: Didushka\nLife motto: \'keep it simple\'\n" />
+                        android:text="Adi Marsiano, CMO\nNickname: Didushka\nLife motto: \'Keep it simple\'\n" />
 
 
                 </RelativeLayout>
