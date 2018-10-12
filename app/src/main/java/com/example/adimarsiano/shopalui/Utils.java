@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -33,6 +34,19 @@ public class Utils {
 
         try {
             json = (JSONObject) parser.parse(jsonString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return json;
+    }
+
+    public static JSONArray toJsonArray(String jsonString) {
+        JSONParser parser = new JSONParser();
+        JSONArray json = null;
+
+        try {
+            json = (JSONArray) parser.parse(jsonString);
         } catch (ParseException e) {
             e.printStackTrace();
         }

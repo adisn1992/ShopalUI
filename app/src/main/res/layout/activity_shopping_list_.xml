@@ -31,21 +31,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:weightSum="4">
+                    android:weightSum="3">
 
-                    <TextView
-                        android:id="@+id/head_row_shoppingList_padding01"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.65"
-                        android:gravity="center"
-                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/head_row_shoppingList_tv1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2.05"
+                        android:layout_weight="1.1"
+                        android:gravity="center"
+                        android:text=""
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/head_row_shoppingList_padding02"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.25"
                         android:gravity="center"
                         android:text="Product"
                         android:textSize="12sp" />
@@ -57,14 +59,6 @@
                         android:layout_weight="0.65"
                         android:gravity="center"
                         android:text="To Buy"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/head_row_shoppingList_padding02"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.65"
-                        android:gravity="center"
                         android:textSize="12sp" />
 
                 </TableRow>

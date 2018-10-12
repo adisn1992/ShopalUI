@@ -37,7 +37,16 @@
                     android:id="@+id/head_row_tv1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2.05"
+                    android:layout_weight="1.1"
+                    android:gravity="center"
+                    android:text=""
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/head_row_tv11"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.23"
                     android:gravity="center"
                     android:text="Product"
                     android:textSize="12sp" />
@@ -46,7 +55,7 @@
                     android:id="@+id/head_row_tv2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.65"
+                    android:layout_weight="0.585"
                     android:gravity="center"
                     android:text="Available"
                     android:textSize="12sp" />
@@ -55,7 +64,7 @@
                     android:id="@+id/head_row_tv3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.65"
+                    android:layout_weight="0.585"
                     android:gravity="center"
                     android:text="Limit"
                     android:textSize="12sp" />
@@ -64,7 +73,7 @@
                     android:id="@+id/head_row_tv4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.65"
+                    android:layout_weight="0.50"
                     android:gravity="center"
                     android:text="Delete"
                     android:textSize="12sp" />

@@ -1,8 +1,10 @@
 package com.example.adimarsiano.shopalui;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -152,7 +154,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         protected JSONObject doInBackground(Object[] parameters) {
             try {
                 // Url
-                URL stockUrl = new URL("http://192.168.1.3:8080/rest/stock/get/" + stockId);
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/get/" + stockId);
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -191,10 +193,14 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
             switch (statusCode) {
                 case SUCCESS:
                     try {
-                        JSONObject pictures = new GetImagesUrls().execute(stockId).get();
+                        JSONArray picturesAndNames = new GetImagesUrlsAndNames().execute(stockId).get();
                         JSONObject stock = (JSONObject) res.get("stock");
 
-                        fillStockTable(stock, pictures);
+                        fillStockTable(stock, picturesAndNames);
+                        // empty stock
+                        if(!(stock.get("items").toString()).contains("productId")){
+                            createAndShowAlert("Your stock is empty, please add products via the Scanner");
+                        }
                     } catch (Exception e) {
                         createAndShowToast("Error: status code - unknown");
                     }
@@ -220,7 +226,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
                 data = (JSONObject) parameters[0];
 
                 // Url
-                URL stockUrl = new URL("http://192.168.1.3:8080/rest/stock/update/");
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/update/");
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request property
@@ -285,16 +291,16 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
 
     private class RemoveProduct extends AsyncTask<Object, String, JSONObject> {
         private JSONObject response = new JSONObject();
-        private Integer productId = null;
+        private Long productId = null;
 
         @Override
         protected JSONObject doInBackground(Object[] parameters) {
             try {
                 JSONObject data = (JSONObject)parameters[0];
-                productId = Integer.parseInt(data.get("productId").toString());
+                productId = Long.parseLong(data.get("productId").toString());
 
                 // Url
-                URL stockUrl = new URL("http://192.168.1.3:8080/rest/stock/remove/");
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/remove/");
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -355,13 +361,13 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    public static class GetImagesUrls extends AsyncTask<Object, String, JSONObject> {
+    public static class GetImagesUrlsAndNames extends AsyncTask<Object, String, JSONArray> {
         @Override
-        protected JSONObject doInBackground(Object[] parameters) {
+        protected JSONArray doInBackground(Object[] parameters) {
 
             try {
                 // Url - to product and not to stock
-                URL stockUrl = new URL("http://192.168.1.3:8080/rest/product/getImgs/" +  parameters[0].toString());
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/product/getImgs/" +  parameters[0].toString());
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -373,7 +379,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
                 if (statusCode == 200 || statusCode ==  204 ) {
                     InputStream responseInputStream = urlConnection.getInputStream();
                     String response = IOUtils.toString(responseInputStream, "UTF_8");
-                    return Utils.toJson(response);
+                    return Utils.toJsonArray(response);
                 }
                 // failure
                 else{
@@ -386,7 +392,7 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void removeRowByProductId(Integer productId){
+    private void removeRowByProductId(Long productId){
         for(int i = 1, rows = table.getChildCount(); i < rows; i++) {
             View row = table.getChildAt(i);
             if (row instanceof TableRow) {
@@ -399,46 +405,54 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void fillStockTable(JSONObject stock, JSONObject pictures) {
+    private void fillStockTable(JSONObject stock, JSONArray picturesAndNames) {
         // getting iterators of products and images
         JSONArray products = null;
-        JSONArray images = null;
+        JSONArray productsData = null;
         JSONParser parser = new JSONParser();
 
         try {
             products = (JSONArray) parser.parse(stock.get("items").toString());
-            images = (JSONArray) parser.parse(pictures.get("productsImg").toString());
-
+            productsData = (JSONArray) parser.parse(picturesAndNames.toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         Iterator<JSONObject> itr_products = products.iterator();
-        Iterator<JSONObject> itr_images = images.iterator();
+        Iterator<JSONObject> itr_productsData = productsData.iterator();
 
         // iterate over products and images and builds rows
-        while (itr_products.hasNext() && itr_images.hasNext()) {
+        while (itr_products.hasNext() && itr_productsData.hasNext()) {
             JSONObject product = itr_products.next();
-            JSONObject img = itr_images.next();
+            JSONObject data = itr_productsData.next();
 
             // row:
             TableRow new_row =(TableRow)getLayoutInflater().inflate(R.layout.tablerow_stock_template, null);
             new_row.setTag(product.get("productId").toString());
 
-            // available:
-            EditText available = (EditText)new_row.getChildAt(1);
-            available.setText(product.get("available").toString());
-
-            // limit:
-            EditText limit = (EditText)new_row.getChildAt(2);
-            limit.setText(product.get("limit").toString());
 
             //img:
             ImageView imgView = (ImageView)new_row.getChildAt(0);
-            new LoadImage().execute(img.get("productImg").toString(), imgView);
+            String img = data.get("productImg").toString();
+            // there is image for this product
+            if(img.contains("https")){
+                new LoadImage().execute(img, imgView);
+            }
+
+            //name:
+            TextView nameView = (TextView)new_row.getChildAt(1);
+            nameView.setText(data.get("productName").toString());
+
+            // available:
+            EditText available = (EditText)new_row.getChildAt(2);
+            available.setText(product.get("available").toString());
+
+            // limit:
+            EditText limit = (EditText)new_row.getChildAt(3);
+            limit.setText(product.get("limit").toString());
 
             // delete button
-            ImageButton delete = (ImageButton)new_row.getChildAt(3);
+            ImageButton delete = (ImageButton)new_row.getChildAt(4);
             delete.setTag("deleteButton_" + product.get("productId").toString());
             delete.setOnClickListener((View.OnClickListener)context);
 
@@ -446,18 +460,31 @@ public class stock_Activity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private Integer getProductIdByDeleteButton(View v){
+    private Long getProductIdByDeleteButton(View v){
         String tag = v.getTag().toString();
-        return Integer.parseInt(tag.substring(tag.indexOf("_") + 1));
+        return Long.parseLong(tag.substring(tag.indexOf("_") + 1));
     }
 
-    public static Integer getProductIdByTag(View view){
-        return Integer.parseInt(view.getTag().toString());
+    public static Long getProductIdByTag(View view){
+        return Long.parseLong(view.getTag().toString());
     }
 
     private void createAndShowToast(String text){
         Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
         toast.show();
+    }
+
+    private void createAndShowAlert(String text){
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage("Your stock is empty, please add products via the Scanner");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
     private void refreshTable(){
