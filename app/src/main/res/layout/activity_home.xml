@@ -23,20 +23,21 @@
 
             <TextView
                 android:id="@+id/title_text"
-                android:layout_width="361dp"
-                android:layout_height="42dp"
+                android:layout_width="319dp"
+                android:layout_height="66dp"
                 android:layout_marginBottom="10dp"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:gravity="center"
-                android:text="@string/title_text"
+                android:text="    Shopal\n"
                 android:textColor="@android:color/white"
                 android:textSize="36sp" />
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/infoButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
+                android:background="@null"
                 app:srcCompat="@drawable/ic_info_name" />
 
         </LinearLayout>
@@ -64,28 +65,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="shoppingList"
-                android:text="View and Update Shopping List" />
+                android:text="SHOPPING LIST" />
 
             <Button
                 android:id="@+id/button6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="stock"
-                android:text="View and Update Stock" />
+                android:text="STOCK" />
 
             <Button
                 android:id="@+id/button7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="detailsAccount"
-                android:text="View Details Account" />
+                android:text="ACCOUNT DETAILS" />
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="aboutUs"
-                android:text="About Us" />
+                android:text="ABOUT US" />
 
         </LinearLayout>
 
