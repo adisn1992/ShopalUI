@@ -280,14 +280,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
                     break;
             }
             //scan done: update UI buttons
-            scanBtn.setEnabled(false);
-            deleteBtn.setEnabled(true);
-            addBtn.setEnabled(true);
-            isCurrProductExist = false;
-            contentTxt = (TextView) findViewById(R.id.scan_content);
-            contentTxt.setGravity(Gravity.CENTER_HORIZONTAL);
-            contentTxt.setTextSize(30);
-            contentTxt.setText("What Would You Like To Do?");
+            setButtonsToScannerStartStatus();
         }
     }
 
@@ -373,6 +366,9 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
                     createAndShowToast("Sorry, something went wrong...\nPlease try again.");
                     break;
             }
+
+            //scan done: update UI buttons
+            setButtonsToScannerStartStatus();
         }
     }
 
@@ -442,7 +438,6 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
 
             switch (statusCode) {
                 case SUCCESS:
-                    // createAndShowToast : create toast (little alert to the user that showed up and disappeared after a few seconds)
                     createAndShowToast("Product has been added");
                     break;
                 case BAD_REQUEST:
@@ -460,15 +455,19 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
             }
 
             //scan done: update UI buttons
-            scanBtn.setEnabled(false);
-            deleteBtn.setEnabled(true);
-            addBtn.setEnabled(true);
-            isCurrProductExist = false;
-            contentTxt = (TextView) findViewById(R.id.scan_content);
-            contentTxt.setGravity(Gravity.CENTER_HORIZONTAL);
-            contentTxt.setTextSize(30);
-            contentTxt.setText("What Would You Like To Do?");
+            setButtonsToScannerStartStatus();
         }
+    }
+
+    private void setButtonsToScannerStartStatus(){
+        scanBtn.setEnabled(false);
+        deleteBtn.setEnabled(true);
+        addBtn.setEnabled(true);
+        isCurrProductExist = false;
+        contentTxt = (TextView) findViewById(R.id.scan_content);
+        contentTxt.setGravity(Gravity.CENTER_HORIZONTAL);
+        contentTxt.setTextSize(30);
+        contentTxt.setText("What Would You Like To Do?");
     }
 
     private void createAndShowToast(String text) {
