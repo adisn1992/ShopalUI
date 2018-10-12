@@ -114,7 +114,10 @@ public class signIn_Activity extends AppCompatActivity implements
     // [END onActivityResult]
 
     // [START handleSignInResult]
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+
+
+
+ private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
@@ -125,36 +128,97 @@ public class signIn_Activity extends AppCompatActivity implements
             userDtails.setLastName(account.getFamilyName());
             userDtails.setEmail(account.getEmail());
             userDtails.setImageUrl(account.getPhotoUrl());
-            // findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
-            class GetIdToken extends AsyncTask<String, String, String> {
-                @Override
-                protected String doInBackground(String[] parameters) {
-                    try {
-                        URL tokenUrl = new URL("http://192.168.1.12:8080/rest/shopal/token/" + idToken);
-                        System.out.println("id token: " + tokenUrl);
-                        // Create connection
-                        HttpURLConnection myConnection = (HttpURLConnection) tokenUrl.openConnection();
 
-                        System.out.println("response input stream");
-                        InputStream responseInputStream = myConnection.getInputStream();
-                        System.out.println("response body reader");
-                    } catch (Exception e) {
-                        System.out.println(e);
+            // findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+
+       class GetUser extends AsyncTask<String, String, String>
+       {
+            private StringBuilder builder = new StringBuilder();
+            private TextView contentTxt;
+
+            @Override
+            protected String doInBackground(String[] parameters)
+            {
+                try
+                {
+                   String firstName  = parameters[0].toString();
+                   String lastName = parameters[1].toString();
+                   String email = parameters[3].toString();
+                    System.out.println("running in new thread");
+                     URL tokenUrl = new URL("http://192.168.1.11:8080/rest/shopal/user/addUser/" + firstName + "/" + lastName + "/" + email);
+                            System.out.println("id token: " + tokenUrl);
+                            // Create connection
+                            HttpURLConnection myConnection = (HttpURLConnection) tokenUrl.openConnection();
+
+                            System.out.println("response input stream");
+                            InputStream responseInputStream = myConnection.getInputStream();
+                    System.out.println("response body reader");
+                    java.io.InputStreamReader responseBodyReader =
+                            new java.io.InputStreamReader(responseInputStream, "UTF-8");
+
+                    System.out.println("json reader");
+                    android.util.JsonReader jsonReader = new android.util.JsonReader(responseBodyReader);
+
+                    System.out.println("begin object");
+                    jsonReader.beginArray(); // Start processing the JSON object
+                    jsonReader.beginObject();
+
+                    while (jsonReader.hasNext()) { // Loop through all keys
+                        String key = jsonReader.nextName(); // Fetch the next key
+                        String value = jsonReader.nextString();// Fetch the value as a String
+
+                        if (key.equals("product_name") || key.equals("product_description") || key.equals("product_barcode")) {
+                            builder.append(key);
+                            builder.append(" : ");
+                            builder.append(value);
+                            builder.append('\n');
+
+                            // save current barcode
+                          // if (key.equals("product_barcode"))
+                                /*currentBarcode = value;*/
+                        }
                     }
-                    return "";
+                    System.out.println(builder.toString());
                 }
+                catch (Exception e)
+                {
+                    System.out.println("Exception idStock");
+                    System.out.println(e);
+                }
+
+                return builder.toString();
             }
 
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);
+            @Override
+            protected void onPostExecute(String result)
+            {
+               /*   if (result.)
 
-        } catch (ApiException e) {
+
+                if (result.isEmpty())
+                    createAndShowToast("Sorry, something went wrong...\nPlease try again.");
+                // display scanner info alert
+                scannerResultAlert(builder.toString());
+
+                new ValidateProduct().execute(currentBarcode);*/
+            }
+         }
+
+    }
+    catch (ApiException e)
+    {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
             updateUI(null);
         }
-    }
+        }
+
+
+
+
+
+
     // [END handleSignInResult]
 
     // [START signIn]
