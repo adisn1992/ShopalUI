@@ -51,7 +51,6 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
         setContentView(R.layout.activity_shopping_list_);
         context = this;
 
-        //shoppingListText = findViewById(R.id.shoppingList_text);
         table = findViewById(R.id.shoppingList_table);
 
         purchaseButton = findViewById(R.id.purchaseButton);
