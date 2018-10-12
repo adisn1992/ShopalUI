@@ -103,7 +103,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_alignStart="@+id/galText"
                         android:layout_marginBottom="127dp"
-                        android:text="Adi Sitbon, CTO\nNickname: Didi\nLife motto:?\n" />
+                        android:text="Adi Sitbon, CTO\nNickname: Didi\nLife motto: \'Life is a one way ticket so live well\' \n" />
 
                     <ImageView
                         android:id="@+id/imageView5"
