@@ -99,7 +99,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
         protected String doInBackground(String[] parameters) {
             try {
                 System.out.println("running in new thread");
-                URL shopalUrl = new URL("http://192.168.1.2:8080/rest/shopal/product/" + parameters[0].toString());
+                URL shopalUrl = new URL("http://192.168.1.105:8080/rest/shopal/product/" + parameters[0].toString());
 
                 System.out.println("url: " + shopalUrl);
                 // Create connection
@@ -124,15 +124,18 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
                     String value = jsonReader.nextString();// Fetch the value as a String
 
                     if (key.equals("product_name") || key.equals("product_description") || key.equals("product_barcode")) {
-                        builder.append(key);
-                        builder.append(" : ");
-                        builder.append(value);
-                        builder.append('\n');
-
-                        //TODO: remove barcode from display
                         // save current barcode
                         if (key.equals("product_barcode"))
                             currentBarcode = value;
+                        else
+                        {
+                            if (key.equals("product_name"))
+                                builder.append("Product Name: ");
+                            if (key.equals("product_description"))
+                                builder.append("Product Description: ");
+                            builder.append(value);
+                            builder.append('\n');
+                        }
                     }
                 }
                 System.out.println(builder.toString());
@@ -206,7 +209,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
                     // define postData
                     data = (JSONObject) parameters[0];
                     // Url
-                    URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/productToTrash");
+                    URL stockUrl = new URL("http://192.168.1.105:8080/rest/stock/productToTrash");
                     // connection
                     HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                     // request property
@@ -286,7 +289,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
             try {
                 Long productId = Long.parseLong(parameters[0].toString());
                 // Url
-                URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/isProductExistInStock/" + stockId + "/" + productId);
+                URL stockUrl = new URL("http://192.168.1.105:8080/rest/stock/isProductExistInStock/" + stockId + "/" + productId);
                 // connection
                 HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                 // request type
@@ -381,7 +384,7 @@ public class BarcodeScannerActivity extends AppCompatActivity implements OnClick
                     data = (JSONObject) parameters[0];
 
                     // Url
-                    URL stockUrl = new URL("http://192.168.1.2:8080/rest/stock/addProduct/");
+                    URL stockUrl = new URL("http://192.168.1.105:8080/rest/stock/addProduct/");
                     // connection
                     HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
                     // request property

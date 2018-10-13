@@ -59,10 +59,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="386dp"
+                android:layout_height="375dp"
                 android:layout_gravity="bottom"
                 android:layout_marginBottom="0dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="60dp"
                 android:layout_weight="1"
                 android:dividerPadding="10dp"
                 android:orientation="horizontal"
@@ -70,47 +70,39 @@
 
                 <RelativeLayout
                     android:id="@+id/relativeLayout1"
-                    android:layout_width="fill_parent"
+                    android:layout_width="366dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:background="@android:color/darker_gray"
                     android:gravity="bottom|end">
 
                     <Button
                         android:id="@+id/add_product_barcode_button"
-                        android:layout_width="174dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
+                        android:layout_width="184dp"
+                        android:layout_height="71dp"
+                        android:layout_alignParentLeft="false"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="false"
                         android:text="Add Product To Stock " />
 
                     <Button
                         android:id="@+id/delete_product_barcode_button"
-                        android:layout_width="191dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_width="180dp"
+                        android:layout_height="71dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="false"
+                        android:layout_alignParentTop="false"
                         android:text="Throw Product\n" />
 
                     <Button
                         android:id="@+id/scan_button"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="62dp"
                         android:layout_alignParentBottom="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
                         android:enabled="false"
                         android:text="@string/scan" />
-                    <!--Button
-                        android:id="@+id/scan_button"
-                        android:layout_width="400dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="100dp"
-                        android:layout_marginTop="60dp"
-                        android:layout_weight="1"
-                        android:text="@string/scan"
-                        android:layout_alignParentBottom="true"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_constraintHorizontal_bias="parent" /-->
 
                 </RelativeLayout>
 
