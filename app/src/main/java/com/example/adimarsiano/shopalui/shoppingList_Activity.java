@@ -1,6 +1,8 @@
 package com.example.adimarsiano.shopalui;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -27,37 +29,41 @@ import java.util.Iterator;
 import static com.example.adimarsiano.shopalui.stock_Activity.getProductIdByTag;
 
 public class shoppingList_Activity extends AppCompatActivity  implements View.OnClickListener {
-    // adi: get shoppingListId!
+    // private vars
     private String stockId = "";
+    private AppCompatActivity context;
+    private Button purchaseButton;
+    private TableLayout table;
+
+    // status code:
     private static final int BAD_REQUEST = 400;
     private static final int SUCCESS = 200;
     private final int VOID_SUCCESS = 204;
     private static final int NOT_ACCEPTABLE = 406;
     private static final int ERROR = -1;
 
-    private TextView shoppingListText;
-    private TableLayout table;
-    private TableRow head_row;
-    private Button purchaseButton;
-    private AppCompatActivity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // get stockId from prev activity
         Bundle b = getIntent().getExtras();
         if(b != null)
             stockId = b.getString("stockId");
 
+        // configurations
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_list_);
-        context = this;
 
+        // configure private vars from view
+        context = this;
         table = findViewById(R.id.shoppingList_table);
 
+        // configure purchase button
         purchaseButton = findViewById(R.id.purchaseButton);
         purchaseButton.setOnClickListener((android.view.View.OnClickListener) context);
         purchaseButton.setTag("purchaseButton");
 
-
+        // import shopping list
         new ImportShoppingList().execute();
     }
 
@@ -65,8 +71,6 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
     public void onClick(View button) {
         if (button.getTag().toString().contains("purchaseButton")) {
             clickPurchaseButton();
-        } else {
-
         }
     }
 
@@ -140,6 +144,31 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
         }
     }
 
+    private void createAndShowToast(String text) {
+        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    private void refreshTable() {
+        TableRow headRow = findViewById(R.id.head_row_shoppingList);
+        table.removeAllViews();
+        table.addView(headRow);
+        new ImportShoppingList().execute();
+    }
+
+    private void createAndShowAlert(String text){
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setMessage(text);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
     private class ImportShoppingList extends AsyncTask<Object, String, JSONObject> {
         private JSONObject response = new JSONObject();
 
@@ -188,7 +217,22 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                     try {
                         JSONArray picturesAndNames = new stock_Activity.GetImagesUrlsAndNames().execute(stockId).get();
                         JSONObject shoppingList = (JSONObject) res.get("shoppingList");
-                        fillShoppingListTable(shoppingList, picturesAndNames);
+
+                        // empty shoppingList
+                        if(!(shoppingList.get("items").toString()).contains("toPurchase")){
+                            // gone table and purchase button
+                            findViewById(R.id.head_row_shoppingList).setVisibility(View.GONE);
+                            findViewById(R.id.purchaseButton).setVisibility(View.GONE);
+
+                            createAndShowAlert("Your have no items to purchase :) \nyour stock is full");
+                        }
+                        else{
+                            // visible table and purchase button
+                            findViewById(R.id.head_row_shoppingList).setVisibility(View.VISIBLE);
+                            findViewById(R.id.purchaseButton).setVisibility(View.VISIBLE);
+
+                            fillShoppingListTable(shoppingList, picturesAndNames);
+                        }
                     } catch (Exception e) {
                         createAndShowToast("Error: something went wrong");
                     }
@@ -262,7 +306,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                     refreshTable();
                     break;
                 case BAD_REQUEST:
-                    createAndShowToast("sorry, your stock or sime product is invalid");
+                    createAndShowToast("sorry, your stock or some product is invalid");
                     break;
                 case NOT_ACCEPTABLE:
                     createAndShowToast("sorry, something went wrong");
@@ -272,18 +316,6 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                     break;
             }
         }
-    }
-
-    private void createAndShowToast(String text) {
-        Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
-        toast.show();
-    }
-
-    private void refreshTable() {
-        TableRow headRow = findViewById(R.id.head_row_shoppingList);
-        table.removeAllViews();
-        table.addView(headRow);
-        new ImportShoppingList().execute();
     }
 }
 
