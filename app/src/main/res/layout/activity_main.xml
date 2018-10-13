@@ -33,13 +33,15 @@
             android:background="@null"
             app:srcCompat="@mipmap/ic_launcher_round" />
 
-        <Button
-            android:id="@+id/sign_out_button"
+
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Exit"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            tools:visibility="gone" />
 
         <!--<Button-->
             <!--android:id="@+id/sign_out_button"-->
@@ -59,13 +61,14 @@
         android:layout_weight="1"
         android:background="@color/blue_grey_900">
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
+        <Button
+            android:id="@+id/sign_out_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="visible"
-            tools:visibility="gone" />
+            android:text="Exit"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 
