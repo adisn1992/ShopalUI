@@ -215,7 +215,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
             switch (statusCode) {
                 case SUCCESS:
                     try {
-                        JSONArray picturesAndNames = new stock_Activity.GetImagesUrlsAndNames().execute(stockId).get();
+                        JSONArray picturesAndNames = new GetImagesUrlsAndNames().execute(stockId).get();
                         JSONObject shoppingList = (JSONObject) res.get("shoppingList");
 
                         // empty shoppingList
@@ -224,7 +224,7 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                             findViewById(R.id.head_row_shoppingList).setVisibility(View.GONE);
                             findViewById(R.id.purchaseButton).setVisibility(View.GONE);
 
-                            createAndShowAlert("Your have no items to purchase :) \nyour stock is full");
+                            createAndShowAlert("You have no items to purchase :) \nyour stock is full");
                         }
                         else{
                             // visible table and purchase button
@@ -314,6 +314,37 @@ public class shoppingList_Activity extends AppCompatActivity  implements View.On
                 default:
                     createAndShowToast("Error: status code - unknown");
                     break;
+            }
+        }
+    }
+
+    public static class GetImagesUrlsAndNames extends AsyncTask<Object, String, JSONArray> {
+        @Override
+        protected JSONArray doInBackground(Object[] parameters) {
+
+            try {
+                // Url - to product and not to stock
+                URL stockUrl = new URL("http://192.168.1.2:8080/rest/product/getImgsToShoppingList/" +  parameters[0].toString());
+                // connection
+                HttpURLConnection urlConnection = (HttpURLConnection) stockUrl.openConnection();
+                // request type
+                urlConnection.setRequestMethod("GET");
+                // status
+                int statusCode = urlConnection.getResponseCode();
+
+                // success
+                if (statusCode == 200 || statusCode ==  204 ) {
+                    InputStream responseInputStream = urlConnection.getInputStream();
+                    String response = IOUtils.toString(responseInputStream, "UTF_8");
+                    return Utils.toJsonArray(response);
+                }
+                // failure
+                else{
+                    return null;
+                }
+            } catch (Exception e){
+                System.out.println(e);
+                return null;
             }
         }
     }
